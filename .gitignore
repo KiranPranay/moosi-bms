@@ -2,6 +2,16 @@
 Thumbs.db
 *.log
 
-# Held back from this PUBLIC repo: the Zeroth Review deck lists four students'
-# full names and roll numbers. Remove this line only if you intend to publish it.
+# Python tooling for the review decks
+.venv/
+__pycache__/
+*.pyc
+
+# Intermediate page renders from the QA pass
+docs/reviews/**/render/
+*-page-*.png
+
+# Held back from this PUBLIC repo: a classmate's Zeroth Review deck, shared only
+# as a formatting reference. Its title slide lists four students by name with
+# their roll numbers, so it is not published here.
 Major_Project_Zeroth_Review_Batch15.pdf

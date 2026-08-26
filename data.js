@@ -40,10 +40,16 @@ export const PROJECT_DOCS = [
     pending: true,
   },
   {
-    id: "doc-phase0",
-    title: "Phase 0 Presentation",
-    file: "./docs/phase-0-presentation.pptx",
-    note: "Kick-off review deck. Export a PDF alongside it to preview inline.",
+    id: "doc-review1",
+    title: "First Review Presentation",
+    file: "./docs/reviews/first-review/Predictive_BMS_First_Review.pdf",
+    note: "The deck for the first review. Slides, diagrams and speaker notes.",
+  },
+  {
+    id: "doc-review0",
+    title: "Zeroth Review Presentation",
+    file: "./docs/reviews/zeroth-review/zeroth-review.pdf",
+    note: "Add your own copy of the zeroth review deck here.",
     pending: true,
   },
   {
@@ -80,7 +86,7 @@ export const PHASES = [
       { id: "p1-doc-arch", title: "Architecture Diagram", file: "./docs/architecture.png", note: "Block diagram submitted with the synopsis.", pending: true },
       { id: "p1-doc-signoff", title: "Guide Sign-off", file: "./docs/guide-approval.pdf", note: "Scanned approval page.", pending: true },
     ],
-    docRefs: ["doc-abstract", "doc-phase0"],
+    docRefs: ["doc-abstract", "doc-review1"],
     tasks: [
       { id: "p1-synopsis",     title: "Synopsis",              done: false },
       { id: "p1-architecture", title: "Architecture Diagram",  done: false },

@@ -1,0 +1,13 @@
+# Python packages needed to regenerate the diagrams and rebuild the deck.
+#   python -m venv .venv && .venv/bin/pip install -r requirements.txt
+python-pptx>=1.0
+matplotlib>=3.8
+schemdraw>=0.19
+numpy>=1.26
+Pillow>=10.0
+pdfplumber>=0.11        # only used to re-measure the template
+graphviz>=0.20          # optional; the diagrams here use matplotlib layout
+
+# Also needed, outside pip:
+#   LibreOffice (soffice)  - to export the PDF
+#   poppler-utils          - pdftoppm / pdftotext, for the page renders

@@ -109,6 +109,45 @@ Two kinds, side by side in every phase panel:
 
 ---
 
+## Review decks
+
+The presentations for each review are built from code, so the diagrams and the
+slides stay in step with each other.
+
+```
+docs/reviews/
+├── template-notes.md            the layout, fonts and colours the decks follow
+├── assets/logo.png              college logo, cropped from a printed deck
+├── zeroth-review/               put your zeroth review deck here
+└── first-review/
+    ├── Predictive_BMS_First_Review.pptx      edit this in PowerPoint
+    ├── Predictive_BMS_First_Review.pdf       the version to hand in
+    ├── build_slides.py                       builds the pptx
+    ├── requirements.txt
+    ├── research-notes.md                     sources behind the numbers
+    └── diagrams/                             one script per figure
+```
+
+To rebuild everything from scratch:
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r docs/reviews/first-review/requirements.txt
+cd docs/reviews/first-review/diagrams && for f in [0-9]*.py; do ../../../../.venv/bin/python "$f"; done
+cd .. && ../../../.venv/bin/python build_slides.py
+soffice --headless --convert-to pdf Predictive_BMS_First_Review.pptx
+```
+
+Each diagram script writes both a `.png` and an `.svg`. `build_slides.py` picks
+up the PNGs, so re-run a diagram script before rebuilding the deck if you change
+one. Every slide carries speaker notes.
+
+The finished deck also shows up inside the tracker: it is listed in `data.js`
+under `PROJECT_DOCS`, so it previews in the **Project documents** card, and there
+is a small link to it in the footer.
+
+---
+
 ## How to add a task or a phase
 
 **A task** — add an object to that phase's `tasks` array:
