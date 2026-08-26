@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 380" width="860" height="380" role="img"
+     aria-label="Placeholder single line diagram for a 4S battery management system">
+  <rect width="860" height="380" fill="#fffaf7"/>
+  <g font-family="Nunito, Segoe UI, sans-serif" fill="#4a3b46">
+
+    <text x="430" y="34" font-size="17" font-weight="700" text-anchor="middle">4S Pack — Single Line Diagram</text>
+    <text x="430" y="56" font-size="12" fill="#e67d9f" font-weight="700" text-anchor="middle">
+      PLACEHOLDER — replace this file with your own SLD
+    </text>
+
+    <!-- cells in series -->
+    <g stroke="#b58aa5" stroke-width="2" fill="#ffeef3">
+      <rect x="40"  y="110" width="74" height="58" rx="8"/>
+      <rect x="134" y="110" width="74" height="58" rx="8"/>
+      <rect x="228" y="110" width="74" height="58" rx="8"/>
+      <rect x="322" y="110" width="74" height="58" rx="8"/>
+    </g>
+    <g font-size="13" text-anchor="middle" font-weight="600">
+      <text x="77"  y="145">B1</text><text x="171" y="145">B2</text>
+      <text x="265" y="145">B3</text><text x="359" y="145">B4</text>
+    </g>
+    <g stroke="#b58aa5" stroke-width="2">
+      <line x1="114" y1="139" x2="134" y2="139"/>
+      <line x1="208" y1="139" x2="228" y2="139"/>
+      <line x1="302" y1="139" x2="322" y2="139"/>
+    </g>
+    <text x="218" y="192" font-size="12" fill="#7a6a75" text-anchor="middle">4 x 18650 in series — 14.8V nominal</text>
+
+    <!-- sense taps -->
+    <g stroke="#f19ab7" stroke-width="1.5" stroke-dasharray="4 4">
+      <line x1="77"  y1="110" x2="77"  y2="70"/><line x1="171" y1="110" x2="171" y2="70"/>
+      <line x1="265" y1="110" x2="265" y2="70"/><line x1="359" y1="110" x2="359" y2="70"/>
+      <line x1="77"  y1="70"  x2="600" y2="70"/>
+    </g>
+    <text x="200" y="62" font-size="12" fill="#9b7090">voltage divider taps + NTC thermistors</text>
+
+    <!-- shunt / current sensor -->
+    <rect x="424" y="112" width="86" height="54" rx="8" fill="#fdd9e4" stroke="#b58aa5" stroke-width="2"/>
+    <text x="467" y="136" font-size="12" text-anchor="middle" font-weight="600">ACS712</text>
+    <text x="467" y="153" font-size="11" text-anchor="middle" fill="#7a6a75">current</text>
+    <line x1="396" y1="139" x2="424" y2="139" stroke="#b58aa5" stroke-width="2"/>
+
+    <!-- MOSFET cutoff -->
+    <rect x="540" y="112" width="86" height="54" rx="8" fill="#fdd9e4" stroke="#b58aa5" stroke-width="2"/>
+    <text x="583" y="136" font-size="12" text-anchor="middle" font-weight="600">MOSFET</text>
+    <text x="583" y="153" font-size="11" text-anchor="middle" fill="#7a6a75">cutoff</text>
+    <line x1="510" y1="139" x2="540" y2="139" stroke="#b58aa5" stroke-width="2"/>
+
+    <!-- load -->
+    <line x1="626" y1="139" x2="690" y2="139" stroke="#b58aa5" stroke-width="2"/>
+    <rect x="690" y="112" width="86" height="54" rx="8" fill="#dcefe4" stroke="#9ccbb0" stroke-width="2"/>
+    <text x="733" y="145" font-size="12" text-anchor="middle" font-weight="600">LOAD</text>
+
+    <!-- controller -->
+    <rect x="470" y="248" width="180" height="72" rx="10" fill="#ffeef3" stroke="#9b7090" stroke-width="2"/>
+    <text x="560" y="276" font-size="14" text-anchor="middle" font-weight="700">ESP32</text>
+    <text x="560" y="298" font-size="11" text-anchor="middle" fill="#7a6a75">sense · predict · cut off · publish</text>
+
+    <g stroke="#f19ab7" stroke-width="1.5" stroke-dasharray="4 4">
+      <line x1="600" y1="70"  x2="600" y2="248"/>
+      <line x1="467" y1="166" x2="467" y2="284"/><line x1="467" y1="284" x2="470" y2="284"/>
+      <line x1="583" y1="166" x2="583" y2="248"/>
+    </g>
+    <text x="660" y="336" font-size="11" fill="#9b7090" text-anchor="middle">Wi-Fi → dashboard</text>
+    <path d="M650 284 q40 0 40 40" fill="none" stroke="#f19ab7" stroke-width="1.5" stroke-dasharray="4 4"/>
+  </g>
+</svg>

@@ -1,0 +1,16 @@
+Item,Part,Specification,Qty,Unit,Source,Status
+1,Microcontroller,ESP32-WROOM-32 DevKit v1 (30-pin),1,pcs,,To order
+2,Li-ion cell,18650 3.7V 2600mAh (matched capacity),4,pcs,,To order
+3,Cell holder,4S 18650 spring holder,1,pcs,,To order
+4,Nickel strip,0.15 x 8mm pure nickel,1,m,,To order
+5,NTC thermistor,10k B3950 glass bead,4,pcs,,To order
+6,Power MOSFET,IRLZ44N logic-level N-channel,2,pcs,,To order
+7,MOSFET driver,TC4420 / gate resistor network,1,pcs,,To order
+8,Current sensor,ACS712 20A hall-effect module,1,pcs,,To order
+9,Divider resistors,1% metal film assorted (10k-100k),1,set,,To order
+10,Voltage regulator,AMS1117-3.3 module,1,pcs,,To order
+11,Fuse + holder,15A blade fuse with inline holder,1,pcs,,To order
+12,Perfboard,"Double-sided, 7x9cm",2,pcs,,To order
+13,Connectors,XT60 pair + JST-XH 5-pin balance lead,1,set,,To order
+14,Wire,16AWG silicone (power) / 22AWG (sense),2,m,,To order
+15,Enclosure filament,PLA+ 1.75mm,0.5,kg,,To order

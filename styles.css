@@ -1,0 +1,403 @@
+/* ------------------------------------------------------------------
+   Predictive BMS Tracker — small custom layer on top of Tailwind.
+   Only things Tailwind can't express cleanly live here:
+   the animated strikethrough, the sparkle, the phase glow,
+   the checked-state checkbox transitions, scrollbars, focus rings.
+   ------------------------------------------------------------------ */
+
+:root {
+  --rose-100: #ffeef3;
+  --rose-200: #fdd9e4;
+  --rose-300: #f9bcd0;
+  --rose-400: #f19ab7;
+  --cream:    #fffaf7;
+  --sage-400: #9ccbb0;
+  --ink-400:  #a3939e;
+}
+
+/* Keep long words from blowing out the 360px layout. */
+body { overflow-wrap: break-word; }
+
+/* ── Progress bars ────────────────────────────────────────────────── */
+
+#progress-fill,
+.phase-fill {
+  transition: width 600ms cubic-bezier(.4, 0, .2, 1);
+}
+
+/* ── Custom checkbox ──────────────────────────────────────────────── */
+/* Two selectors on purpose: `.is-done` is toggled by JS, `:checked ~`
+   covers the frame between a native toggle and the JS re-render. Both
+   are (0,2,0) so they win over Tailwind's single-class utilities. */
+
+.task-box {
+  transition: background-color 250ms ease, border-color 250ms ease, box-shadow 200ms ease;
+}
+
+.task-check {
+  transform: scale(0);
+  transition: transform 250ms cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.task-row.is-done .task-box,
+.task-input:checked ~ .task-box {
+  background-color: var(--rose-400);
+  border-color: var(--rose-400);
+}
+
+.task-row.is-done .task-check,
+.task-input:checked ~ .task-box .task-check {
+  transform: scale(1);
+}
+
+/* Focus ring lives on the visible circle, since the input is sr-only. */
+.task-input:focus-visible ~ .task-box {
+  box-shadow: 0 0 0 2px var(--cream), 0 0 0 4px var(--rose-300);
+}
+
+/* Locked-in (hardcoded `done: true`) rows are not clickable. */
+.task-row.is-locked {
+  cursor: default;
+}
+
+/* ── Animated strikethrough ───────────────────────────────────────── */
+
+/* Drawn as a background gradient rather than an absolutely-positioned ::after:
+   with `box-decoration-break: clone` every wrapped line gets struck through,
+   where a single absolute bar would draw one rule between the lines instead.
+   background-size is animatable, so the 0 -> 100% sweep is unchanged. */
+.task-title {
+  position: relative;
+  display: inline;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 58%;
+  background-size: 0% 1.5px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 400ms ease, color 400ms ease;
+}
+
+.task-row.is-done .task-title,
+.task-input:checked ~ .task-label .task-title {
+  background-size: 100% 1.5px;
+}
+
+/* ── Sparkle ──────────────────────────────────────────────────────── */
+
+.sparkle {
+  position: absolute;
+  left: 0.55rem;
+  top: 50%;
+  font-size: 0.85rem;
+  line-height: 1;
+  pointer-events: none;
+  opacity: 0;
+  animation: sparkle-float 800ms ease-out forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes sparkle-float {
+  0%   { opacity: 0;   transform: translateY(0)      scale(0.6); }
+  25%  { opacity: 1;   transform: translateY(-5px)   scale(1.1); }
+  100% { opacity: 0;   transform: translateY(-18px)  scale(1.1); }
+}
+
+/* ── Phase completion glow ────────────────────────────────────────── */
+/* The Tailwind Play CDN injects its stylesheet after this file, so a bare
+   `.phase-complete` would lose the tie against `.shadow-petal` on the same
+   element. The extra class/element qualifier settles it. */
+
+section.phase-card {
+  transition: box-shadow 500ms ease, border-color 500ms ease;
+}
+
+.phase-card.phase-complete {
+  box-shadow: 0 0 0 3px rgba(156, 203, 176, 0.35), 0 12px 40px rgba(230, 125, 159, 0.12);
+}
+
+.phase-card.phase-complete:hover {
+  box-shadow: 0 0 0 3px rgba(156, 203, 176, 0.45), 0 12px 40px rgba(230, 125, 159, 0.16);
+}
+
+/* Gentle fade for the "Complete 🌸" pill. */
+.phase-badge {
+  transition: opacity 400ms ease, transform 400ms ease;
+}
+
+.phase-badge[hidden] {
+  display: none;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────── */
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rose-300) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--rose-200);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--rose-300);
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .sparkle {
+    display: none;
+  }
+}
+
+/* Done text fades to a softer ink. (0,2,0) beats Tailwind's text-* utility. */
+.task-row.is-done .task-title,
+.task-input:checked ~ .task-label .task-title {
+  color: var(--ink-400);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Detail panel — notes and documents
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Reserve the scrollbar gutter so locking the body when the panel opens
+   does not shove the whole page sideways. */
+html {
+  scrollbar-gutter: stable;
+}
+
+body.panel-locked {
+  overflow: hidden;
+}
+
+#panel[hidden],
+#panel.hidden {
+  display: none;
+}
+
+#panel-backdrop {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+#panel-sheet {
+  opacity: 0;
+  transform: translateY(14px) scale(0.985);
+  transition: opacity 320ms cubic-bezier(.2, .8, .3, 1), transform 320ms cubic-bezier(.2, .8, .3, 1);
+}
+
+#panel.is-open #panel-backdrop {
+  opacity: 1;
+}
+
+#panel.is-open #panel-sheet {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ── Card affordance ──────────────────────────────────────────────── */
+
+.phase-card,
+.library-card {
+  cursor: pointer;
+}
+
+.phase-open {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.phase-open:focus {
+  outline: none;
+}
+
+.phase-open:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--cream), 0 0 0 4px var(--rose-300);
+  border-radius: 1rem;
+}
+
+.card-hint {
+  transition: color 300ms ease, opacity 300ms ease;
+}
+
+.phase-card:hover .card-hint,
+.library-card:hover .card-hint {
+  color: var(--rose-400);
+}
+
+/* ── Document rows ────────────────────────────────────────────────── */
+
+.doc-row {
+  transition: background-color 250ms ease, border-color 250ms ease;
+}
+
+.doc-icon {
+  flex: 0 0 auto;
+}
+
+.doc-pending {
+  opacity: 0.72;
+}
+
+.doc-preview {
+  animation: doc-reveal 320ms cubic-bezier(.2, .8, .3, 1);
+}
+
+@keyframes doc-reveal {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.doc-preview img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.doc-preview iframe {
+  width: 100%;
+  height: min(70vh, 620px);
+  border: 0;
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+/* ── CSV tables ───────────────────────────────────────────────────── */
+
+.doc-table-wrap {
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(253, 217, 228, 0.9);
+  background: #fff;
+  max-height: 26rem;
+  overflow-y: auto;
+}
+
+table.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+table.doc-table th,
+table.doc-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--rose-100);
+}
+
+table.doc-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--rose-50, #fff7f9);
+  color: #7f5a76;
+  font-weight: 700;
+  border-bottom: 1px solid var(--rose-200);
+}
+
+table.doc-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+table.doc-table tbody tr:nth-child(even) td {
+  background: rgba(255, 247, 249, 0.6);
+}
+
+table.doc-table td.is-numeric,
+table.doc-table th.is-numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+table.doc-table tfoot td {
+  background: #ffeef3;
+  font-weight: 700;
+  color: #7f5a76;
+  border-top: 1px solid var(--rose-200);
+  border-bottom: 0;
+  position: sticky;
+  bottom: 0;
+}
+
+/* ── Notes ────────────────────────────────────────────────────────── */
+
+.notes-input {
+  width: 100%;
+  min-height: 7rem;
+  resize: vertical;
+  font: inherit;
+  line-height: 1.65;
+  color: #4a3b46;
+  background: #fff;
+  border: 1px solid rgba(253, 217, 228, 0.9);
+  border-radius: 1rem;
+  padding: 0.9rem 1.05rem;
+  transition: border-color 250ms ease, box-shadow 250ms ease;
+}
+
+.notes-input::placeholder {
+  color: var(--ink-400);
+}
+
+.notes-input:focus {
+  outline: none;
+  border-color: var(--rose-300);
+  box-shadow: 0 0 0 3px rgba(249, 188, 208, 0.35);
+}
+
+.notes-saved {
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.notes-saved.is-visible {
+  opacity: 1;
+}
+
+/* ── Panel scrollbar (scoped, matches the page) ───────────────────── */
+
+#panel-scroll,
+.doc-table-wrap {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rose-300) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #panel-sheet {
+    transform: none;
+  }
+}

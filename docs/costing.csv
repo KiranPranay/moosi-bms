@@ -1,0 +1,16 @@
+Item,Part,Qty,Unit Cost (INR),Amount (INR),Notes
+1,ESP32-WROOM-32 DevKit,1,450,450,Indicative - update with your quote
+2,18650 cell 2600mAh,4,250,1000,Indicative - update with your quote
+3,4S 18650 holder,1,120,120,Indicative - update with your quote
+4,Nickel strip 0.15x8mm,1,150,150,Indicative - update with your quote
+5,NTC 10k B3950,4,20,80,Indicative - update with your quote
+6,IRLZ44N MOSFET,2,45,90,Indicative - update with your quote
+7,Gate driver + passives,1,90,90,Indicative - update with your quote
+8,ACS712 20A module,1,180,180,Indicative - update with your quote
+9,Resistor set 1%,1,100,100,Indicative - update with your quote
+10,AMS1117-3.3 module,1,40,40,Indicative - update with your quote
+11,Fuse + holder,1,80,80,Indicative - update with your quote
+12,Perfboard 7x9cm,2,60,120,Indicative - update with your quote
+13,Connectors (XT60 + JST-XH),1,140,140,Indicative - update with your quote
+14,Wire (silicone + sense),2,90,180,Indicative - update with your quote
+15,PLA+ filament,0.5,1200,600,Indicative - update with your quote

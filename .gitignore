@@ -1,0 +1,7 @@
+.DS_Store
+Thumbs.db
+*.log
+
+# Held back from this PUBLIC repo: the Zeroth Review deck lists four students'
+# full names and roll numbers. Remove this line only if you intend to publish it.
+Major_Project_Zeroth_Review_Batch15.pdf
