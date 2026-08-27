@@ -1,10 +1,27 @@
 # Zeroth review
 
-Put your own Zeroth Review deck here as `zeroth-review.pdf`. It is already
-listed in `data.js` as a pending document, so once the file exists you only need
-to delete the `pending: true` line from that entry and it will appear in the
-tracker.
+The deck for the zeroth review. It follows the order zeroth reviews are
+presented in the department: abstract, problem statement and objective,
+implementation outline, literature survey, references.
 
-The deck that was used as a formatting reference while building the First Review
-slides belongs to another team and is not stored in this repository. See
-[`../template-notes.md`](../template-notes.md) for the measurements taken from it.
+| File | What it is |
+| --- | --- |
+| `Predictive_BMS_Zeroth_Review.pptx` | Edit this one |
+| `Predictive_BMS_Zeroth_Review.pdf` | The version to hand in |
+| `build_slides.py` | Builds the pptx from the diagrams |
+| `diagrams/` | One script per figure |
+
+To rebuild:
+
+```bash
+cd diagrams && for f in z*.py; do ../../../../.venv/bin/python "$f"; done
+cd .. && ../../../.venv/bin/python build_slides.py
+soffice --headless --convert-to pdf Predictive_BMS_Zeroth_Review.pptx
+```
+
+The slide layout comes from [`../deck_common.py`](../deck_common.py) and the
+figure styling from [`../diagram_style.py`](../diagram_style.py), so this deck
+and the first review look the same.
+
+**The date in the footer is 22-07-2026.** Change `export_date` at the top of
+`build_slides.py` if the review is on another day.

@@ -116,9 +116,14 @@ slides stay in step with each other.
 
 ```
 docs/reviews/
-├── template-notes.md            the layout, fonts and colours the decks follow
+├── deck_common.py               slide layout, shared by both decks
+├── diagram_style.py             colours and type, shared by all figures
+├── template-notes.md            the measurements the decks follow
 ├── assets/logo.png              college logo, cropped from a printed deck
-├── zeroth-review/               put your zeroth review deck here
+├── zeroth-review/
+│   ├── Predictive_BMS_Zeroth_Review.pptx / .pdf
+│   ├── build_slides.py
+│   └── diagrams/                block diagram, firmware flowchart
 └── first-review/
     ├── Predictive_BMS_First_Review.pptx      edit this in PowerPoint
     ├── Predictive_BMS_First_Review.pdf       the version to hand in
@@ -128,23 +133,27 @@ docs/reviews/
     └── diagrams/                             one script per figure
 ```
 
-To rebuild everything from scratch:
+To rebuild a deck from scratch:
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r docs/reviews/first-review/requirements.txt
+
+# the first review
 cd docs/reviews/first-review/diagrams && for f in [0-9]*.py; do ../../../../.venv/bin/python "$f"; done
 cd .. && ../../../.venv/bin/python build_slides.py
 soffice --headless --convert-to pdf Predictive_BMS_First_Review.pptx
 ```
 
+The zeroth review works the same way, from `docs/reviews/zeroth-review/`.
+
 Each diagram script writes both a `.png` and an `.svg`. `build_slides.py` picks
 up the PNGs, so re-run a diagram script before rebuilding the deck if you change
 one. Every slide carries speaker notes.
 
-The finished deck also shows up inside the tracker: it is listed in `data.js`
-under `PROJECT_DOCS`, so it previews in the **Project documents** card, and there
-is a small link to it in the footer.
+Both decks show up inside the tracker: they are listed in `data.js` under
+`PROJECT_DOCS`, so they preview in the **Project documents** card, and there is a
+small link in the footer.
 
 ---
 

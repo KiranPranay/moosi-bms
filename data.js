@@ -48,9 +48,8 @@ export const PROJECT_DOCS = [
   {
     id: "doc-review0",
     title: "Zeroth Review Presentation",
-    file: "./docs/reviews/zeroth-review/zeroth-review.pdf",
-    note: "Add your own copy of the zeroth review deck here.",
-    pending: true,
+    file: "./docs/reviews/zeroth-review/Predictive_BMS_Zeroth_Review.pdf",
+    note: "Abstract, problem, objective, block diagram and literature survey.",
   },
   {
     id: "doc-bom",
