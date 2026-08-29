@@ -50,6 +50,7 @@ build, and the papers I have read so far.
         "Problem Statement",
         "Objective",
         "Implementation Outline (Block Diagram / Flowchart)",
+        "Components",
         "Implementation and Tools",
         "Literature Survey",
         "References",
@@ -113,6 +114,31 @@ fast each cell is heating, and if the rise is too fast or any limit is crossed
 it cuts off charging and discharging. If everything is fine it sends the
 readings to the dashboard and starts again.
 """); n += 1
+
+    table_slide(prs, n, "Components",
+        ["Component", "How many", "What it does"],
+        [["18650 lithium-ion cells", "4", "The battery pack the system looks after"],
+         ["ESP32 board", "1", "Reads the sensors and decides when to cut off"],
+         ["NTC thermistors", "4", "Measure the temperature of each cell"],
+         ["Resistor dividers", "4", "Bring each cell voltage down to a level the ESP32 can read"],
+         ["Current sensor with shunt", "1", "Measures the current going into and out of the pack"],
+         ["Analogue multiplexer", "1", "Lets one input pin read all four thermistors"],
+         ["MOSFETs", "2", "The switches that stop charging and discharging"],
+         ["Bleed resistors", "4", "Drain a little charge from a cell that is fuller than the rest"],
+         ["Buck converter", "1", "Makes the 3.3 V supply for the ESP32 from the pack"],
+         ["Fuse", "1", "The last protection if the electronics fail"]],
+        """
+These are the main parts. The pack is four 18650 cells in series. Around it sit
+the things that watch it: four thermistors for temperature, a resistor divider
+on each cell for voltage, and one current sensor for the whole pack. The
+multiplexer is there because the ESP32 does not have enough analogue pins for
+four thermistors as well as four cell taps, so one pin reads all four in turn.
+The MOSFETs are the switches that actually stop the current. The fuse is there
+in case everything else fails. I have priced all of these and the full list with
+costs will come in the next review.
+""",
+        widths=[3.50, 1.50, 6.15], size=15, row_h=0.44,
+        aligns=["l", "c", "l"]); n += 1
 
     table_slide(prs, n, "Implementation and Tools",
         ["Side", "Tool", "What it is used for"],

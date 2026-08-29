@@ -2,8 +2,8 @@
 
 The deck for the zeroth review. It follows the order zeroth reviews are
 presented in the department: abstract, problem statement and objective,
-implementation outline, implementation and tools, literature survey,
-references.
+implementation outline, components, implementation and tools, literature
+survey, references.
 
 | File | What it is |
 | --- | --- |
