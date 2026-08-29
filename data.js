@@ -25,6 +25,8 @@ export const DATA_VERSION = "1.1.0";
      pending     true = "not filed yet". Renders as a soft placeholder instead
                  of a broken link. Delete this line once you commit the file.
      totalColumn for kind "table" (a .csv): sums that column and shows a total
+     extra       a second file offered next to the first, as
+                 { label: "PowerPoint", file: "./docs/…​.pptx" }
 
    .csv files render as a real table in the panel, images and PDFs preview
    inline, everything else downloads.
@@ -44,12 +46,14 @@ export const PROJECT_DOCS = [
     title: "First Review Presentation",
     file: "./docs/reviews/first-review/Predictive_BMS_First_Review.pdf",
     note: "The deck for the first review. Slides, diagrams and speaker notes.",
+    extra: { label: "PowerPoint", file: "./docs/reviews/first-review/Predictive_BMS_First_Review.pptx" },
   },
   {
     id: "doc-review0",
     title: "Zeroth Review Presentation",
     file: "./docs/reviews/zeroth-review/Predictive_BMS_Zeroth_Review.pdf",
     note: "Abstract, problem, objective, block diagram and literature survey.",
+    extra: { label: "PowerPoint", file: "./docs/reviews/zeroth-review/Predictive_BMS_Zeroth_Review.pptx" },
   },
   {
     id: "doc-bom",
@@ -144,7 +148,7 @@ export const PHASES = [
     ],
     docRefs: ["doc-sld"],
     tasks: [
-      { id: "p4-platformio", title: "Init PlatformIO",                 done: false },
+      { id: "p4-platformio", title: "Set up the ESP-IDF project",      done: false },
       { id: "p4-analog",     title: "Read analog data",                done: false },
       { id: "p4-roc",        title: "Program rate-of-change logic",    done: false },
       { id: "p4-cutoff",     title: "Code safety cutoff",              done: false },

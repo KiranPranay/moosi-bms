@@ -88,8 +88,15 @@ Optional fields on any document:
   kind: "pdf",                  // override the inferred viewer
   totalColumn: "Amount (INR)",  // .csv only: sum this column into a total row
   pending: true,                // not filed yet — renders as a soft placeholder
+
+  // one more file offered next to the first, as a download
+  extra: { label: "PowerPoint", file: "./docs/reviews/…/deck.pptx" },
 }
 ```
+
+`extra` is how the review decks offer the editable `.pptx` next to the `.pdf`
+that previews in place. The row then shows two links: **Open** for the PDF and
+**PowerPoint ↓** for the original.
 
 `pending: true` is how you list something you haven't produced yet: it shows a
 muted "Not filed yet" chip instead of a link that 404s. Delete the line once you

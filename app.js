@@ -515,6 +515,14 @@ function docRowMarkup(entry) {
                         focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300">Download</a>`;
   }
 
+  // A document can offer one extra file alongside the main one — a slide deck
+  // published as a PDF, say, with the editable original next to it.
+  const extra = (!doc.pending && doc.extra && doc.extra.file)
+    ? `<a href="${escapeHtml(doc.extra.file)}" download
+           class="doc-link shrink-0 text-xs font-semibold text-mauve-500 hover:text-mauve-600 underline underline-offset-4 decoration-rose-200 rounded px-2 py-1
+                        focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300">${escapeHtml(doc.extra.label || 'Download')}&nbsp;&#8595;</a>`
+    : '';
+
   const title = previewable
     ? `<button type="button" class="doc-toggle text-left font-semibold text-ink-700 rounded
               focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2"
@@ -532,7 +540,7 @@ function docRowMarkup(entry) {
           <p class="text-xs text-ink-400 mt-0.5">${meta.join(' · ')}</p>
           ${doc.note ? `<p class="text-sm text-ink-500 mt-1.5 leading-relaxed">${escapeHtml(doc.note)}</p>` : ''}
         </div>
-        ${action}
+        <div class="shrink-0 flex items-center gap-1">${action}${extra}</div>
       </div>
       <div class="doc-preview hidden mt-3 rounded-2xl border border-rose-200/60 bg-white/80 p-3"></div>
     </li>`;

@@ -194,7 +194,7 @@ def title_slide(prs, n, note):
 
 
 def content_slide(prs, n, heading, bullets, note, size=BODY_SIZE, sub=None,
-                  numbered=False):
+                  numbered=False, number_format="[%d]  "):
     slide = base(prs, heading, n)
     top = BODY_T
     if sub:
@@ -212,7 +212,7 @@ def content_slide(prs, n, heading, bullets, note, size=BODY_SIZE, sub=None,
             pPr = p._p.get_or_add_pPr()
             pPr.set("marL", str(Emu(Inches(0.42)).emu))
             pPr.set("indent", str(-Emu(Inches(0.42)).emu))
-            run(p, "[%d]  " % (i + 1), size)
+            run(p, number_format % (i + 1), size)
         else:
             set_bullet(p)
         run(p, b, size)
@@ -316,9 +316,16 @@ def two_image_slide(prs, n, heading, img1, img2, cap1, cap2, note, bullets=None)
 
 
 def table_slide(prs, n, heading, headers, rows, note, widths,
-                size=15, total_row=False, sub=None, row_h=0.40, aligns=None):
+                size=15, total_row=False, sub=None, row_h=0.40, aligns=None,
+                statement=None):
     slide = base(prs, heading, n)
     top = BODY_T
+    if statement:
+        _, tf = textbox(slide, BODY_L, top - 0.08, BODY_R - BODY_L, 0.46)
+        p = tf.paragraphs[0]
+        p.alignment = PP_ALIGN.CENTER
+        run(p, statement, 18, bold=True)
+        top += 0.62
     if sub:
         _, tf = textbox(slide, BODY_L, top - 0.06, BODY_R - BODY_L, 0.40)
         p = tf.paragraphs[0]

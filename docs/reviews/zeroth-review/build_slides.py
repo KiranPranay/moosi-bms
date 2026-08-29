@@ -50,6 +50,7 @@ build, and the papers I have read so far.
         "Problem Statement",
         "Objective",
         "Implementation Outline (Block Diagram / Flowchart)",
+        "Implementation and Tools",
         "Literature Survey",
         "References",
     ], """
@@ -57,7 +58,7 @@ This is the order I will follow. I will start with a short summary of the whole
 project, then the problem I am trying to solve and what I want to achieve. After
 that I will show the block diagram and the flowchart of how the system will
 work, and finish with the papers I have studied.
-""", numbered=True); n += 1
+""", numbered=True, number_format="%d.  "); n += 1
 
     content_slide(prs, n, "Abstract", [
         "Lithium-ion cells are used in phones, laptops and electric vehicles, and they "
@@ -112,6 +113,30 @@ fast each cell is heating, and if the rise is too fast or any limit is crossed
 it cuts off charging and discharging. If everything is fine it sends the
 readings to the dashboard and starts again.
 """); n += 1
+
+    table_slide(prs, n, "Implementation and Tools",
+        ["Side", "Tool", "What it is used for"],
+        [["Hardware", "Siemens NX", "Modelling the enclosure"],
+         ["Hardware", "3D printer, PLA+", "Printing the enclosure"],
+         ["Hardware", "Soldering station", "Building the board, perfboard first, then a soldered PCB"],
+         ["Hardware", "Multimeter, bench supply", "Measuring and testing the circuit"],
+         ["Software", "ESP-IDF", "The framework the firmware is built on"],
+         ["Software", "C++", "The language the firmware is written in"],
+         ["Software", "FreeRTOS", "Running the sensor, safety and telemetry tasks"],
+         ["Software", "HTML, CSS, JavaScript", "The dashboard page in the browser"],
+         ["Software", "Git and GitHub", "Keeping the code and the documents"]],
+        """
+This project is not one or the other. There is a circuit to build and there is
+firmware to write for it, and neither works without the other. The hardware side
+is the pack, the sensing, the protection MOSFETs and the enclosure. The software
+side is the firmware on the ESP32 and the dashboard page. The firmware is
+written in C++ on ESP-IDF, which is the framework Espressif supply for the
+ESP32, and it uses FreeRTOS underneath to keep the sensor, safety and telemetry
+work in separate tasks.
+""",
+        widths=[1.90, 3.20, 6.10], size=15, row_h=0.46,
+        aligns=["c", "l", "l"],
+        statement="This project has a hardware part and a software part. Both are built here."); n += 1
 
     table_slide(prs, n, "Literature Survey",
         ["References", "Summary of the work"],
