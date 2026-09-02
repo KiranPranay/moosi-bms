@@ -91,9 +91,9 @@ export const PHASES = [
     ],
     docRefs: ["doc-abstract", "doc-review1"],
     tasks: [
-      { id: "p1-synopsis",     title: "Synopsis",              done: false },
-      { id: "p1-architecture", title: "Architecture Diagram",  done: false },
-      { id: "p1-guide",        title: "Guide Approval",        done: false },
+      { id: "p1-synopsis",     title: "Synopsis",              done: true  },
+      { id: "p1-architecture", title: "Architecture Diagram",  done: true  },
+      { id: "p1-guide",        title: "Guide Approval",        done: true  },
     ],
   },
   {
