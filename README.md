@@ -3,7 +3,8 @@
 A small, unhurried project tracker for the **Predictive BMS** build — six phases,
 a handful of tasks each, and a progress bar that fills up as they get ticked off.
 Open any card and you get that phase's notes and its documents: the abstract, the
-Phase 0 deck, the bill of materials, the costing sheet, the single line diagram.
+Phase 0 deck, the redesigned bill of materials, the costing sheet, the current
+architecture and the gated safe-build sequence.
 Spreadsheets render as real tables, diagrams and PDFs preview in place.
 
 It is a single static page: plain HTML, vanilla ES modules, and Tailwind via the
@@ -57,7 +58,7 @@ Entries can go in three places:
 
 | Where | What it's for |
 | --- | --- |
-| `PROJECT_DOCS` | Spans the whole build — abstract, BOM, costing, SLD. Shown in the **Project documents** card. |
+| `PROJECT_DOCS` | Spans the whole build — abstract, reviews, BOM, costing, architecture and safe-build sequence. Shown in the **Project documents** card. |
 | a phase's `docs: []` | Belongs to that phase. Shown when you open that card. |
 | a task's `docs: []` | Belongs to one task. Shown in its phase's panel, labelled with the task. |
 
@@ -162,6 +163,10 @@ Both decks show up inside the tracker: they are listed in `data.js` under
 `PROJECT_DOCS`, so they preview in the **Project documents** card, and there is a
 small link in the footer.
 
+The review decks are historical submissions. For construction, the authoritative
+documents are `docs/current-architecture.md`, `docs/current-architecture.svg`,
+`docs/bom.csv`, and `docs/safe-build-sequence.md`.
+
 ---
 
 ## How to add a task or a phase
@@ -239,5 +244,5 @@ Then visit <http://localhost:8080>.
 | `docs/` | The documents themselves — see [`docs/README.md`](docs/README.md) |
 | `.nojekyll` | Tells GitHub Pages to serve files as-is |
 
-> The prices in `docs/costing.csv` and the drawing in
-> `docs/sld-placeholder.svg` are **placeholders**. Replace them with your own.
+> `docs/costing.csv` contains the latest verified or explicitly budgeted replacement prices, including full replacement value for parts already owned. Shipping
+> remains excluded. The drawing in `docs/sld-placeholder.svg` is still a placeholder.

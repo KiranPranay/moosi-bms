@@ -22,11 +22,17 @@ docs: [
 
 ## Files currently here
 
-- `bom.csv` — bill of materials, doubles as a procurement checklist
-- `costing.csv` — running budget; the prices are **indicative placeholders**,
-  replace them with real quotes
-- `sld-placeholder.svg` — a clearly-marked placeholder single line diagram.
-  Replace it with your own drawing and update the entry in `data.js`.
+- `current-architecture.md` — authoritative design envelope, wiring, pin map,
+  thresholds, failure behaviour and source links
+- `current-architecture.svg` — current power/protection/sensing architecture
+- `safe-build-sequence.md` — twelve build gates with pass and stop criteria
+- `bom.csv` — redesigned procurement checklist, including add/keep/remove actions
+- `costing.csv` — full replacement-cost budget with a confidence label on every
+  price; owned stock remains costed and shipping and lab tools are excluded
+- `sld-placeholder.svg` — obsolete placeholder retained only as an unused archive
+
+The first-review diagrams are historical. Do not use them as construction
+instructions; the `current-architecture.*` files are the build authority.
 
 Anything referenced in `data.js` with `pending: true` has no file here yet —
 it renders as a soft "not filed yet" placeholder rather than a broken link.
