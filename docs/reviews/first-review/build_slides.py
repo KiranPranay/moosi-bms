@@ -1,10 +1,11 @@
-"""Build the First Review presentation.
+"""Build the Review-1 presentation.
 
     python build_slides.py
 
-The slide furniture lives in ../deck_common.py so the zeroth and first review
-decks come out looking the same. Diagrams come from diagrams/ — re-run a
-diagram script before rebuilding if you change one.
+The layout follows the department's Review-1 template (4:3, green bars, blue
+tables) through ../deck_green.py. The engineering content follows the build
+authority, docs/current-architecture.md (revision 2.1). Every reference was
+checked against Crossref and OpenAlex; see research-notes.md.
 """
 import os
 import sys
@@ -12,341 +13,360 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 
-from deck_common import (                                    # noqa: E402
-    Presentation, Inches, configure, WARNINGS,
-    title_slide, content_slide, image_slide, two_image_slide,
-    table_slide, code_slide, closing_slide, SLIDE_W, SLIDE_H,
-)
+import deck_green as g                                        # noqa: E402
 
 OUT = os.path.join(HERE, "Predictive_BMS_First_Review.pptx")
 
-configure(
-    review_label="First Review-2026-27",
-    export_date="27-08-2026",
+g.configure(
+    export_date="29-09-2026",
     diagram_dir=os.path.join(HERE, "diagrams"),
-    review_heading="Major Project Stage-1 First Review Presentation",
+    review_heading="Major Project Stage-1 Review-1 Presentation",
     title_lines=["Predictive Thermal Battery Management System",
                  "for Li-ion Battery Packs"],
+    presenter="Ms. Muskan Sulathana",
+    roll_no="____________",
+    supervisor_lines=["Rupesh", "EEE Department"],
 )
 
+LIT_HEAD = ["S.No", "Paper Title", "Outcomes", "Limitation / Research Gap"]
+LIT_W = [0.62, 2.78, 2.90, 2.90]
 
-# ── the deck ────────────────────────────────────────────────────────────
+LITERATURE = [
+    ["[1]", "Thermal runaway mechanism of lithium ion battery for electric vehicles: A review",
+     "Reviewed how thermal runaway starts and spreads through a chain of heat-producing "
+     "reactions inside the cell.",
+     "Explains the mechanism, but does not give an on-board method to detect it early."],
+    ["[2]", "Battery management system: An overview of its application in the smart grid "
+            "and electric vehicles",
+     "Showed that a BMS needs accurate state estimation and ways to protect the battery "
+     "from hazardous conditions.",
+     "Focuses on state-of-charge and state-of-health estimation, not on early warning "
+     "from temperature."],
+    ["[3]", "Protection devices in commercial 18650 lithium-ion batteries",
+     "Opened four commercial 18650 cells. Only the current interrupt device and the top "
+     "vent are fitted in every cell.",
+     "These are last-resort devices inside the cell. Pack-level monitoring and early "
+     "warning are not covered."],
+    ["[4]", "Advanced fault diagnosis for lithium-ion battery systems: A review of fault "
+            "mechanisms, fault features, and diagnosis procedures",
+     "Reviewed internal battery faults, sensor faults and actuator faults, and how each "
+     "one can be diagnosed.",
+     "A review only. It does not build or test a low-cost diagnostic system."],
+    ["[5]", "A critical review of thermal runaway prediction and early-warning methods for "
+            "lithium-ion batteries",
+     "Grouped early-warning methods into electrochemistry-based, big-data and artificial "
+     "intelligence methods.",
+     "The groups it describes rely on detailed models, large data sets or AI training, "
+     "not a simple on-board check."],
+    ["[6]", "An online data-driven fault diagnosis and thermal runaway early warning for "
+            "electric vehicle batteries",
+     "Found the cell heading for thermal runaway before it happened, using voltage and "
+     "temperature data from real vehicles.",
+     "Compares many cells statistically, which suits large EV packs rather than a "
+     "four-cell pack."],
+    ["[7]", "A neural network based method for thermal fault detection in lithium-ion "
+            "batteries",
+     "A neural network predicts the cell surface temperature. A large gap between "
+     "prediction and reading flags a fault.",
+     "Needs neural network training and retraining, which is heavy for a low-cost "
+     "microcontroller."],
+    ["[8]", "A combined data-driven and model-based algorithm for accurate battery thermal "
+            "runaway warning",
+     "Combined K-Means clustering with the Bernardi heat equation and warned 25 minutes "
+     "before thermal runaway.",
+     "Needs training data and fitted parameters. Its 1 °C/s limit confirms runaway; it is "
+     "not an early warning."],
+    ["[9]", "Online parameterization of lumped thermal dynamics in cylindrical lithium ion "
+            "batteries for core temperature estimation and health monitoring",
+     "Showed that only the surface temperature can be measured, while the core can be "
+     "hotter, and estimated the core.",
+     "Needs online parameter identification, and was tested on one 26650 LFP cell, not "
+     "an 18650 pack."],
+    ["[10]", "Cloud-based battery condition monitoring platform for large-scale lithium-ion "
+             "battery energy storage systems using internet-of-things (IoT)",
+     "Sent battery module data over IoT links to Google Cloud, where the cell states were "
+     "worked out.",
+     "Depends on the cloud and a network link. Protection has to keep working when Wi-Fi "
+     "is lost."],
+]
+
+REFERENCES = [
+    "X. Feng, M. Ouyang, X. Liu, L. Lu, Y. Xia, and X. He, “Thermal runaway mechanism of "
+    "lithium ion battery for electric vehicles: A review,” Energy Storage Mater., vol. 10, "
+    "pp. 246–267, Jan. 2018, doi: 10.1016/j.ensm.2017.05.013.",
+    "H. Rahimi-Eichi, U. Ojha, F. Baronti, and M.-Y. Chow, “Battery management system: An "
+    "overview of its application in the smart grid and electric vehicles,” IEEE Ind. "
+    "Electron. Mag., vol. 7, no. 2, pp. 4–16, Jun. 2013, doi: 10.1109/MIE.2013.2250351.",
+    "B. Xu, L. Kong, G. Wen, and M. G. Pecht, “Protection devices in commercial 18650 "
+    "lithium-ion batteries,” IEEE Access, vol. 9, pp. 66687–66695, 2021, "
+    "doi: 10.1109/ACCESS.2021.3075972.",
+    "X. Hu, K. Zhang, K. Liu, X. Lin, S. Dey, and S. Onori, “Advanced fault diagnosis for "
+    "lithium-ion battery systems: A review of fault mechanisms, fault features, and "
+    "diagnosis procedures,” IEEE Ind. Electron. Mag., vol. 14, no. 3, pp. 65–91, Sep. 2020, "
+    "doi: 10.1109/MIE.2020.2964814.",
+    "X. Zhang, S. Chen, J. Zhu, and Y. Gao, “A critical review of thermal runaway "
+    "prediction and early-warning methods for lithium-ion batteries,” Energy Mater. Adv., "
+    "vol. 4, Art. no. 0008, 2023, doi: 10.34133/energymatadv.0008.",
+    "Z. Sun et al., “An online data-driven fault diagnosis and thermal runaway early "
+    "warning for electric vehicle batteries,” IEEE Trans. Power Electron., vol. 37, no. 10, "
+    "pp. 12636–12646, Oct. 2022, doi: 10.1109/TPEL.2022.3173038.",
+    "O. Ojo, H. Lang, Y. Kim, X. Hu, B. Mu, and X. Lin, “A neural network based method for "
+    "thermal fault detection in lithium-ion batteries,” IEEE Trans. Ind. Electron., "
+    "vol. 68, no. 5, pp. 4068–4078, May 2021, doi: 10.1109/TIE.2020.2984980.",
+    "Q. Chen, Y. He, N. Fang, and G. Yu, “A combined data-driven and model-based algorithm "
+    "for accurate battery thermal runaway warning,” Sensors, vol. 24, no. 15, Art. no. 4964, "
+    "Jul. 2024, doi: 10.3390/s24154964.",
+    "X. Lin et al., “Online parameterization of lumped thermal dynamics in cylindrical "
+    "lithium ion batteries for core temperature estimation and health monitoring,” IEEE "
+    "Trans. Control Syst. Technol., vol. 21, no. 5, pp. 1745–1755, Sep. 2013, "
+    "doi: 10.1109/TCST.2012.2217143.",
+    "A. Adhikaree, T. Kim, J. Vagdoda, A. Ochoa, P. J. Hernandez, and Y. Lee, “Cloud-based "
+    "battery condition monitoring platform for large-scale lithium-ion battery energy "
+    "storage systems using internet-of-things (IoT),” in Proc. IEEE Energy Convers. Congr. "
+    "Expo. (ECCE), 2017, pp. 1004–1009, doi: 10.1109/ECCE.2017.8095896.",
+]
+
+
 def build():
-    prs = Presentation()
-    prs.slide_width = Inches(SLIDE_W)
-    prs.slide_height = Inches(SLIDE_H)
+    prs = g.new_presentation()
     n = 1
 
-    title_slide(prs, n, """
-Good morning. I am Muskan Sulathana and this is my first review for the major
-project. My project is a battery management system for a small lithium-ion
-pack. What makes it different is that it watches how fast the cells are heating
-up, not just how hot they are. I will take you through the problem, the circuit
-I have designed, the firmware plan, and where I am on the schedule.
+    g.title_slide(prs, """
+Good morning. I am Muskan Sulathana, and this is my Review-1 presentation. My project
+is a battery management system for a small lithium-ion pack that watches how fast the
+cells are warming up, not only how hot they are. Since the zeroth review I have
+finished the literature survey and the full design of the system, and I will take you
+through both.
 """); n += 1
 
-    content_slide(prs, n, "Contents", [
-        "Problem statement and objectives",
-        "Literature survey",
-        "Proposed system, hardware and circuits",
-        "Firmware and the predictive algorithm",
-        "IoT dashboard, cost and work plan",
+    g.bullet_slide(prs, n, "Contents", [
+        "Abstract", "Problem Statement", "Literature Survey",
+        "Problem Analysis / Research Gap", "Objectives", "Methodology",
+        "Block Diagram / Schematic Diagram", "Hardware and Software Requirements",
+        "Individual Contribution", "Project Timeline", "References",
     ], """
-This is the order I will follow. I will start with the problem I am solving and
-why the usual approach falls short. After that I will go through the circuit
-design in detail, then the firmware and the algorithm that does the prediction.
-I will finish with the cost, what I have finished so far, and the plan for the
-rest of the semester.
-"""); n += 1
+This is the order I will follow. I start with a short summary of the project and the
+problem, then the papers I studied and the gap they leave. After that I explain the
+objectives, the method and the design, and finish with my progress and the plan for
+the coming months.
+""", size=21, gap_pt=3, justify=False, top=1.40, heading_size=44); n += 1
 
-    content_slide(prs, n, "Problem Statement", [
-        "A normal small BMS cuts power only when a fixed temperature is crossed, often 60 °C",
-        "A cell that is climbing fast at 35 °C is already faulty, but it passes that test",
-        "Once a lithium cell starts heating itself, the heat drives more reaction, which makes more heat",
-        "A sensor on the outside of a cell always lags what is happening inside it",
-        "So a fixed limit reacts late, and it gives no warning at all beforehand",
+    g.bullet_slide(prs, n, "Abstract", [
+        "Lithium-ion cells store a lot of energy in a small space. A cell that overheats "
+        "can go into thermal runaway, where the heat it makes drives it hotter still.",
+        "Most low-cost battery protection boards act only on voltage and current, and treat "
+        "temperature, if at all, as one fixed limit that is reached late.",
+        "This project builds a predictive thermal battery management system for a 4S1P "
+        "pack of NCR18650GA cells, with two protection layers that work independently.",
+        "A hardware BMS gives over-voltage, under-voltage, over-current and short-circuit "
+        "protection. An ESP32 measures every cell voltage, the pack current and four cell "
+        "temperatures, and works out how fast the temperature is rising.",
+        "When a reading or the rate of rise crosses a limit, the ESP32 opens the charge or "
+        "load relay and latches the fault. Readings are shown on a Wi-Fi dashboard that is "
+        "not part of the safety chain.",
     ], """
-This is the gap I am working on. Almost every small battery protection board
-uses one rule: if the temperature goes above a set value, disconnect. The
-problem is that the set value tells you nothing until it is reached. A cell that
-is heating one degree every second is clearly in trouble even when it is only at
-thirty-five degrees, but a fixed limit ignores that completely. On top of that,
-the thermistor sits on the outside of the can, so the inside is always hotter
-than what I measure. Waiting for an absolute number means acting late.
-"""); n += 1
+This is the whole project in five points. The first two explain why the usual approach
+is not enough. The third and fourth describe what I am building: a hardware layer that
+protects the cells on its own, and an ESP32 layer that watches the temperature trend.
+The last point is how it acts: it disconnects only the unsafe direction and keeps the
+fault latched until someone checks it.
+""", size=18, gap_pt=11); n += 1
 
-    content_slide(prs, n, "Objectives", [
-        "Build a working 4S battery management system for 18650 cells",
-        "Measure four cell voltages, the pack current and four cell temperatures",
-        "Trip on the rate at which temperature rises, not only on its value",
-        "Switch charging and discharging separately, so only the unsafe direction stops",
-        "Send every reading over Wi-Fi to a page that opens on a phone or a laptop",
+    g.bullet_slide(prs, n, "Problem Statement", [
+        "Lithium-ion packs are used in more and more devices, and one overheating cell can "
+        "lead to fire or explosion through thermal runaway.",
+        "Most low-cost protection boards act only on voltage and current. Temperature, if "
+        "it is checked at all, is compared with one fixed limit.",
+        "A fixed limit acts only once the cell is already hot. A cell that is steadily "
+        "heating at a normal temperature passes it with no warning.",
+        "When protection depends on a single microcontroller, a firmware crash or a failed "
+        "sensor can leave the pack unprotected.",
+        "A system is needed that watches the temperature trend, stops only the unsafe "
+        "direction of current, and still protects the pack if the software fails.",
     ], """
-These are the five things I want to have working by the end of the project. The
-third one is the new part and the reason for the project. The fourth matters
-because a pack that is too cold to charge is still perfectly safe to discharge,
-so cutting both directions together would be crude. The last one is what makes
-it possible to actually see what the board is doing while it runs.
-"""); n += 1
+The problem has three parts. The first is timing: a fixed temperature limit is a late
+signal, because it tells you a cell is hot, never that it is becoming hot. The second
+is dependence: if everything relies on one controller, one crash removes all
+protection. The third is bluntness: most boards cut everything, even when only
+charging is unsafe. My design tries to answer all three.
+""", size=18, gap_pt=12); n += 1
 
-    table_slide(prs, n, "Literature Survey",
-        ["Ref", "Author and year", "What they did", "What it does not do", "What I do differently"],
-        [["[1]", "Feng et al., 2018",
-          "Laboratory study of how runaway starts and spreads",
-          "Explains the mechanism; it is not a live detector",
-          "Turns that mechanism into a trip that runs on the board"],
-         ["[2]", "Zhang et al., 2023",
-          "Review of ways to predict runaway early",
-          "Most methods need gas or pressure sensors, or a server",
-          "One threshold test on the ESP32, with no extra sensors"],
-         ["[3]", "Chen et al., 2024",
-          "Trips when the temperature rise reaches 1 °C per second",
-          "Needs training data and a fitted thermal model",
-          "Uses the same 1 °C/s figure, computed directly in firmware"],
-         ["[4]", "Habib et al., 2023",
-          "Review of BMS functions and the problems still open",
-          "Lists thermal runaway as unsolved; builds nothing",
-          "Builds and bench-tests one specific answer to it"]],
-        """
-These four papers frame the work. Feng and his co-authors explain what actually
-happens inside a cell as it runs away, and that is where the physics comes from.
-Zhang's review shows that most early-warning work needs extra hardware or a
-server behind it, which a student project cannot use. The Chen paper is the
-closest to what I am doing, and it is where my one degree per second threshold
-comes from. Habib's review lists thermal runaway as an open problem but does not
-build anything, and that is the gap I am filling.
-""",
-        widths=[0.62, 1.90, 3.05, 3.05, 3.28], size=13.5, row_h=0.86,
-        aligns=["c", "c", "l", "l", "l"]); n += 1
+    g.table_slide(prs, n, "Literature Survey", LIT_HEAD, LITERATURE[:5], LIT_W, """
+These are the first five papers. The first explains the physics of thermal runaway. The
+next three set out what a battery management system should do and what can go wrong,
+including the point that the protection inside an 18650 cell is only a last resort. The
+fifth is a review of early-warning methods, and it shows that most of them need detailed
+models, large data sets or artificial intelligence.
+""", size=13, head_size=14, aligns=["c", "l", "l", "l"], top=1.40); n += 1
 
-    image_slide(prs, n, "Proposed System", "01_system_block.png", """
-This is the whole system on one page. The pack feeds the sensing front end,
-which reports voltage, current and temperature to the ESP32. The ESP32 runs the
-maths and drives two MOSFETs that sit in the pack's negative return. The same
-readings go out over Wi-Fi to a dashboard. The one thing worth pointing out is
-the note at the bottom: the ESP32's second ADC block cannot be used while Wi-Fi
-is running, so every analogue input has to go to the first block.
-""",
-        bullets=[
-            "The pack, the sensing, the controller and the protection sit in one loop",
-            "The same readings are used to protect the pack and to feed the dashboard",
-        ]); n += 1
+    g.table_slide(prs, n, None, LIT_HEAD, LITERATURE[5:], LIT_W, """
+These are the next five. Papers six to eight are actual warning methods. They work,
+but they rely on comparing many cells, on a trained neural network, or on fitted models.
+Paper eight is often quoted for a limit of one degree per second, but in that paper it
+is the rule used to confirm that runaway has already happened, not an early warning.
+Paper nine shows that a sensor on the surface always reads cooler than the core, and
+paper ten moves the analysis to the cloud, which fails when the network does.
+""", size=13, head_size=14, aligns=["c", "l", "l", "l"], top=0.55); n += 1
 
-    image_slide(prs, n, "Hardware Architecture", "02_hardware_architecture.png", """
-This is the same system with the real parts in it. Four cell taps go through
-dividers into the first ADC block. Four thermistors go through a CD4051 analogue
-multiplexer, because a DevKit board only exposes six usable ADC1 pins and I need
-eight channels. Current is measured by an INA226 over I2C, which costs no ADC
-pin at all. A buck module makes the 3.3 volt rail, not a linear regulator,
-because dropping thirteen volts in a linear part would waste about two watts.
-"""); n += 1
+    g.two_section_slide(prs, n,
+        "Problem Analysis", [
+            "Existing studies explain how thermal runaway builds up through heat-producing "
+            "reactions [1], and show the cell core can be hotter than its surface [9].",
+            "Early-warning methods mostly rely on detailed models, large data sets, neural "
+            "networks or the cloud [5]–[8], [10].",
+            "The protection board used here acts on voltage and current only. It does not "
+            "watch temperature at all.",
+        ],
+        "Research Gap", [
+            "A simple method is needed that spots an abnormal temperature rise early, using "
+            "only cell-surface sensors and a low-cost microcontroller.",
+            "The early warning must be backed by protection that still works if the "
+            "controller, a sensor or the network fails [4].",
+            "Charging and discharging should be cut off separately, so that only the unsafe "
+            "direction is stopped.",
+        ], """
+Putting the papers together, the analysis is this. We understand the physics well, and
+there are clever warning methods, but they all need something a small pack does not
+have: many cells to compare, trained models or a cloud connection. And the cheap
+protection boards that small packs do have ignore temperature entirely. So the gap is a
+simple trend-based warning that runs on the board, backed by protection that does not
+depend on it.
+""", size=17, gap_pt=6); n += 1
 
-    image_slide(prs, n, "Power Path — Single Line Diagram",
-                "03_power_path_sld.png", """
-This is the power path on its own. The fuse sits in the positive line as the
-last-resort protection if the electronics fail completely. Both MOSFETs sit in
-the negative return, which is the same arrangement commercial protection boards
-use, because it lets both gates be driven against system ground with no charge
-pump. The circles are the measurement points: cell voltages at the taps, pack
-current across the shunt, and temperature at the cells themselves.
-""",
-        bullets=[
-            "The 15 A fuse is the backstop if the electronics fail completely",
-            "Both switches sit in the negative return, so both gates drive against ground",
-        ]); n += 1
-
-    two_image_slide(prs, n, "Sensing Circuits",
-        "04_voltage_sense_schematic.png", "05_ntc_schematic.png",
-        "Cell voltage", "Cell temperature",
-        bullets=[
-            "Divider ratio 0.128 puts a full 16.8 V pack at 2.15 V — about 4.7 mV per count",
-            "Beta equation: 1/T = 1/T₀ + (1/β)·ln(R/R₀), with T₀ = 298.15 K, R₀ = 10 kΩ, β = 3950 K",
-        ], note="""
-On the left is the divider for a cell tap. All four taps use the same ratio, so
-the top tap sets it: the full pack has to land inside the ADC range, which gives
-0.128 and about 4.7 millivolts per count once it is referred back to the tap.
-That is not precise enough for a production BMS, which is why I have noted an
-external 16-bit converter as the upgrade path. On the right is the thermistor
-input. The useful thing here is that a fixed calibration error cancels out when
-you take a derivative, so the rate trip is far less sensitive to ADC error than
-an absolute reading would be.
-"""); n += 1
-
-    image_slide(prs, n, "Protection and Balancing",
-                "06_cutoff_balancing_schematic.png", """
-The two cut-off MOSFETs are wired source to source. That matters because a
-single MOSFET has a body diode which would keep conducting in one direction even
-when the device is off. With two facing opposite ways, each one blocks a
-different direction, so I can stop charging and discharging separately. I chose
-the IRLZ44N because it is a logic-level part, so a five volt gate is enough, and
-its on-resistance is about 22 milliohms, which at ten amps is only a couple of
-watts. On the right, each cell has its own bleed resistor and switch, and an
-optocoupler keeps the drive isolated so one ground-referenced pin can switch a
-cell sitting several volts up.
-""",
-        bullets=[
-            "IRLZ44N: logic level, 55 V, about 22 mΩ on-resistance at a 5 V gate",
-            "The two body diodes face opposite ways, so each direction blocks separately",
-        ]); n += 1
-
-    image_slide(prs, n, "Firmware Architecture", "07_firmware_flowchart.png", """
-The firmware runs three FreeRTOS tasks. The sensor task reads everything at ten
-hertz and filters it. The safety task owns the state machine and is the only
-thing allowed to touch the MOSFET pins, so there is no way for the telemetry
-code to accidentally switch the pack. The telemetry task builds the JSON message
-once a second. On the right is the state machine. The important part is that
-leaving the cut-off state needs both a low rate and a low temperature, held for
-five seconds, and after three trips in ten minutes it latches until someone
-resets it by hand.
-"""); n += 1
-
-    code_slide(prs, n, "The Predictive Algorithm",
-        ["Temperature is sampled every 100 ms and smoothed before the slope is taken",
-         "The slope is an exponential moving average over a one-second window"],
-        ["T_filt  = ema(T_raw, alpha = 0.2)",
-         "slope   = (T_filt - T_filt_1s_ago) / 1.0",
-         "dTdt    = ema(slope, alpha = 0.3)",
-         "",
-         "if dTdt >= 1.0 or T_filt >= 60.0:",
-         "    open_both_mosfets()",
-         "    state = CUTOFF",
-         "elif dTdt >= 0.5:",
-         "    state = WARNING",
-         "# leave CUTOFF only when dTdt < 0.2 and T_filt < 40 for 5 s"],
-        ["Smoothing comes first: a slope taken from raw counts is mostly noise",
-         "A fixed calibration error cancels in a slope, so the trip tolerates ADC drift"],
-        """
-This is the core of the project in ten lines. The order matters. If you take the
-slope of raw readings you mostly measure noise, because differentiating makes
-noise worse, so the smoothing has to come first. Then the slope itself gets
-smoothed again over a one second window. The threshold of one degree per second
-comes from the Chen paper in my literature survey. The sixty degree line is
-still there as a backstop, but in a real runaway the rate trip fires well before
-it. The last point is the one I like most: because a derivative removes any
-constant offset, a calibration error that would ruin an absolute reading has
-almost no effect on the rate.
-"""); n += 1
-
-    image_slide(prs, n, "Predictive Compared With a Fixed Limit",
-                "08_predictive_vs_reactive.png", """
-This is a simulated curve, not measured data, and the slide says so. The cell
-warms slowly, then self-heating takes over and the temperature climbs
-exponentially. The green line is where the rate trip fires: thirty point eight
-seconds, with the cell still at only thirty-six degrees. The red line is where a
-fixed sixty degree limit would fire, at forty point four seconds. That is almost
-ten seconds earlier, and more importantly the pack is twenty-four degrees cooler
-when the power is removed. I will replace this with real bench data once the
-prototype is running.
-""",
-        caption="Simulated for illustration. Real measurements will replace this after bench testing."); n += 1
-
-    image_slide(prs, n, "IoT Dashboard", "09_iot_architecture.png", """
-The ESP32 joins the local Wi-Fi and serves a small web page itself, so there is
-no cloud account and no broker to set up. Once a second the telemetry task
-builds the JSON message you can see at the bottom left, and pushes it over a
-WebSocket. The browser draws live gauges and a rolling chart from that. The one
-message going the other way is the command to clear a latched cut-off, and that
-is deliberately the only thing the dashboard is allowed to do.
-"""); n += 1
-
-    table_slide(prs, n, "Bill of Materials",
-        ["Item", "Qty", "Unit (₹)", "Amount (₹)"],
-        [["ESP32-WROOM-32 DevKit V1", "1", "450", "450"],
-         ["18650 cells, 2600 mAh", "4", "250", "1000"],
-         ["4S holder and nickel strip", "1 set", "270", "270"],
-         ["NTC thermistor 10 kΩ B3950", "4", "7", "28"],
-         ["INA226 module with shunt", "1", "250", "250"],
-         ["IRLZ44N cut-off MOSFETs", "2", "45", "90"],
-         ["Balancing parts per cell (P-FET, opto, bleed)", "4 sets", "45", "180"],
-         ["CD4051B multiplexer and TC4420 driver", "1 set", "145", "145"],
-         ["MP1584EN buck module", "1", "90", "90"],
-         ["Passives, fuse, board and wiring", "1 set", "550", "550"],
-         ["Total", "", "", "3053"]],
-        """
-This is the full parts list. It comes to about three thousand rupees, which is
-within what I can fund myself. The thermistor price is the only one I have
-confirmed on a live product page; the rest are the usual retail figures and I
-have marked them as approximate. The cells are the biggest single line, and I
-plan to buy them from a seller who will supply matched capacities, because
-mismatched cells would make the balancing work much harder later.
-""",
-        widths=[5.20, 1.10, 1.60, 1.90], size=14, total_row=True,
-        aligns=["l", "c", "c", "c"],
-        sub="Approximate Indian retail prices, August 2026"); n += 1
-
-    table_slide(prs, n, "Work Completed",
-        ["Phase", "Status", "What is done"],
-        [["1 · Initial approvals", "Complete", "Synopsis, block diagram and guide approval"],
-         ["2 · Procurement", "In progress", "Parts list finalised and priced; ordering next"],
-         ["3 · Prototyping", "Not started", "Waiting on parts"],
-         ["4 · Core software", "Not started", "Algorithm and state machine designed on paper"],
-         ["5 · IoT integration", "Not started", "Message format decided"],
-         ["6 · Final polish", "Not started", "—"]],
-        """
-This is where I actually am. The approvals phase is finished. Procurement is the
-live one: the parts list is final and priced, and I am placing the order this
-week. Nothing on the bench has been built yet, which is honest, but the design
-work for the later phases is not zero either. The algorithm and the state
-machine are worked out on paper, and the telemetry message format is decided, so
-those phases should move quickly once the hardware exists.
-""",
-        widths=[3.10, 2.05, 6.00], size=15, row_h=0.72,
-        aligns=["l", "c", "l"]); n += 1
-
-    image_slide(prs, n, "Work Plan", "10_gantt.png", """
-This is the plan for the rest of the semester, twelve weeks from the end of
-August. Procurement takes two weeks. Prototyping overlaps with it slightly
-because I can start the sensing board before the cells arrive. The software
-phase is the longest at four and a half weeks, and it deliberately overlaps
-prototyping, since I can test the reading and filtering code on the bench supply
-before the pack is finished. The four dashed lines are the checkpoints I am
-holding myself to.
-"""); n += 1
-
-    content_slide(prs, n, "Expected Outcomes", [
-        "A working 4S BMS that cuts off on temperature rate, demonstrated on the bench",
-        "Measured proof that the rate trip fires earlier than a fixed 60 °C limit",
-        "A live dashboard showing voltage, current, temperature and rate for every cell",
-        "A design that costs about ₹3,000 and uses only parts available in India",
+    g.bullet_slide(prs, n, "Objectives", [
+        "To study thermal runaway in lithium-ion cells and the methods used to detect it early.",
+        "To design a two-layer protection system: an independent hardware BMS, and an ESP32 "
+        "supervisor that can disconnect charging and discharging separately.",
+        "To measure every cell voltage, the pack current and four cell temperatures "
+        "accurately, using an ADS1115, an INA226 and NTC thermistors.",
+        "To estimate the rate of temperature rise (dT/dt) in firmware and act on it before "
+        "any fixed temperature limit is reached, with every trip latched.",
+        "To show live readings and faults on a Wi-Fi dashboard, while every safety function "
+        "keeps working without Wi-Fi.",
     ], """
-These are the four things I expect to be able to show at the end. The second one
-is the real test of the project, and I plan to prove it by warming a cell with a
-small heater and recording when each trip fires. The last point matters for a
-college project: everything on the list can be bought locally, so the work can
-actually be repeated by someone else in the department.
+These five objectives map directly onto the project timeline later in the talk. The
+first two are about understanding the problem and designing the answer, and both are
+done. The third and fourth are the hardware and firmware work for the coming months.
+The last one makes the system visible, but I have deliberately kept it out of the
+safety chain.
+""", size=18, gap_pt=13); n += 1
+
+    g.image_slide(prs, n, "Methodology", "r1_methodology.png", """
+This is how the controller works, five times every second. It reads the four cell taps,
+the pack current and the four temperatures, removes noise with a median filter and a
+ten-second low-pass filter, and then works out the rate of temperature rise by fitting a
+straight line over the last thirty seconds. Before trusting any reading it checks that
+the sensors are plausible. Then it compares everything with the trip limits and the
+warning limits. A trip opens only the relay for the unsafe direction and stays latched
+until a manual reset.
+""", box=(0.35, 1.35, 9.30, 5.60)); n += 1
+
+    g.image_slide(prs, n, "Block Diagram", "r1_block_diagram.png", """
+The design has two layers. Layer A, at the top, is a hardware BMS board connected
+directly to the cells. It handles over-voltage, under-voltage, over-current and short
+circuit on its own, and it keeps working even if the ESP32 or the Wi-Fi fails. Layer B
+is the ESP32 supervisor. It reads the ADS1115 for the cell voltages, the INA226 for the
+current and four thermistors for temperature, and it drives two relays that connect the
+load and the charger separately.
+""", box=(0.35, 1.35, 9.30, 5.60)); n += 1
+
+    slide = g.image_slide(prs, n, "Schematic Diagram", "r1_schematic.png", """
+This is the power path. The cells connect to the hardware BMS through five balance taps.
+The protected positive goes through a 7.5 ampere fuse and a 5 milliohm shunt, where the
+INA226 measures the current, and then to the load and the charger. Each branch has its
+own relay in the negative return. Both relays are normally open and held off by
+pull-ups, so if the ESP32 resets or crashes, both branches disconnect.
+""", box=(0.35, 1.40, 9.30, 2.95))
+    _, tf = g.textbox(slide, g.BODY_L, 4.62, g.BODY_R - g.BODY_L, 2.20)
+    g._bullets(tf, [
+        "The hardware BMS protects the cells on its own, even if the ESP32 or Wi-Fi fails.",
+        "The 7.5 A fuse sits at the pack positive; the 5 mΩ shunt carries all branch current.",
+        "Each relay is normally open and held off by a pull-up, so a reset disconnects both.",
+    ], 17, 8, justify=False)
+    n += 1
+
+    g.table_slide(prs, n, "Hardware and Software Requirements",
+        ["Type", "Item", "Used for"],
+        [["Hardware", "ESP32-WROOM-32 DevKit", "Sensing, dT/dt, relay control and Wi-Fi"],
+         ["Hardware", "4 × NCR18650GA 3300 mAh", "The 4S1P pack, with a 16.8 V 1.5 A charger"],
+         ["Hardware", "4S 20 A hardware BMS", "Voltage, current and short-circuit protection"],
+         ["Hardware", "ADS1115 16-bit ADC", "The four cell-tap voltages"],
+         ["Hardware", "INA226 with 5 mΩ shunt", "Pack current, charging and discharging"],
+         ["Hardware", "4 × NTC 10 kΩ B3950", "Temperature on each cell"],
+         ["Hardware", "2-channel 5 V relay module", "Separate charge and load disconnect"],
+         ["Hardware", "LM2596, 7.5 A fuse, buzzer", "5 V supply, wiring protection, local alarm"],
+         ["Software", "ESP-IDF with C++", "Firmware framework and language"],
+         ["Software", "FreeRTOS", "Sensor, safety and telemetry tasks"],
+         ["Software", "HTML, CSS, JavaScript", "The Wi-Fi dashboard"],
+         ["Software", "Siemens NX, Git and GitHub", "Enclosure model, version control"]],
+        [1.30, 3.30, 4.60], """
+This is everything the project uses. On the hardware side the main parts are the ESP32,
+the four cells, the hardware BMS board, the ADS1115 for accurate cell voltages, the
+INA226 for current and the four thermistors. The relay module gives the separate charge
+and load control. On the software side the firmware is written in C++ on ESP-IDF, with
+FreeRTOS running the sensing, safety and telemetry work as separate tasks.
+""", size=12.5, head_size=14, aligns=["c", "l", "l"], top=1.38, row_h=0.41,
+        heading_size=34); n += 1
+
+    contrib = g.table_slide(prs, n, "Individual Contribution",
+        ["Member", "Contributions"],
+        [[["Ms. Muskan Sulathana", "", "(individual project)"],
+          "Studied research papers on thermal runaway, early-warning methods and BMS design, "
+          "and identified the research gap."],
+         ["", "Designed the two-layer protection: an independent hardware BMS and an ESP32 "
+              "supervisor with separate charge and load relays."],
+         ["", "Selected and costed every component, reconciled the purchase list and recorded "
+              "the parts already in hand."],
+         ["", "Prepared a twelve-stage build and test plan, in which the cells are added only "
+              "after low-voltage testing."],
+         ["", "Prepared the project documents and this presentation."]],
+        [2.60, 6.40], """
+This is an individual project, so all of the work so far is mine. The main pieces are
+the literature survey, the two-layer design, the component selection and costing, and a
+staged build and test plan. That plan matters for safety: the lithium cells are only
+connected after every sensor and both relays have been tested at low voltage.
+""", size=13, head_size=14, aligns=["c", "l"], top=1.60, row_h=0.86)
+    table = [s for s in contrib.shapes if s.has_table][0].table
+    table.cell(1, 0).merge(table.cell(5, 0))
+    n += 1
+
+    g.table_slide(prs, n, "Project Timeline",
+        ["Activity", "Month 1", "Month 2", "Month 3", "Month 4", "Month 5"],
+        [[{"b": "Objective 1: ", "t": "Literature Survey & System Study"}, "✓", "✓", "", "", ""],
+         [{"b": "Objective 2: ", "t": "Two-Layer Design & Component Selection"}, "✗", "✓", "", "", ""],
+         [{"b": "Objective 3: ", "t": "Sensing Hardware, Pack Assembly & Calibration"}, "✗", "✗", "", "", ""],
+         [{"b": "Objective 4: ", "t": "dT/dt Estimation & Safety State Machine"}, "✗", "✗", "", "", ""],
+         [{"b": "Objective 5: ", "t": "Wi-Fi Dashboard, Testing & Documentation"}, "✗", "✗", "", "", ""]],
+        [3.20, 1.20, 1.20, 1.20, 1.20, 1.20], """
+This is where I am. The literature survey was done over the first two months, and the
+two-layer design and component selection were finished in the second month. The
+remaining three objectives are the build: assembling and calibrating the sensing
+hardware, writing and testing the firmware, and then the dashboard, full testing and
+documentation.
+""", size=15, head_size=15, aligns=["l", "c", "c", "c", "c", "c"], top=1.55, row_h=0.80,
+        bold_first_col=False, legend=["✓ = Completed", "✗ = Yet to be done"]); n += 1
+
+    g.references_slide(prs, n, "References", REFERENCES[:5], 1, """
+These are the first five references, in IEEE style, numbered as in the survey tables.
+""", size=14); n += 1
+
+    g.references_slide(prs, n, None, REFERENCES[5:], 6, """
+These are references six to ten. Seven of the ten are IEEE publications.
+""", size=14); n += 1
+
+    g.thank_you_slide(prs, n, """
+Thank you. I am happy to take any questions on the design, the choice of limits or the
+plan for testing.
 """); n += 1
-
-    content_slide(prs, n, "References", [
-        "X. Feng, M. Ouyang, X. Liu, L. Lu, Y. Xia and X. He, “Thermal runaway mechanism of "
-        "lithium ion battery for electric vehicles: A review,” Energy Storage Materials, "
-        "vol. 10, pp. 246–267, 2018.",
-        "X. Zhang, S. Chen, J. Zhu et al., “A critical review of thermal runaway prediction and "
-        "early-warning methods for lithium-ion batteries,” Energy Material Advances, "
-        "vol. 4, art. 0008, 2023.",
-        "Q. Chen, Y. He, N. Fang and G. Yu, “A combined data-driven and model-based algorithm for "
-        "accurate battery thermal runaway warning,” Sensors, vol. 24, no. 15, art. 4964, 2024.",
-        "A. K. M. A. Habib, M. K. Hasan, G. F. Issa, D. Singh, S. Islam and T. M. Ghazal, "
-        "“Lithium-ion battery management system for electric vehicles: Constraints, challenges "
-        "and recommendations,” Batteries, vol. 9, no. 3, art. 152, 2023.",
-        "IS 16046 (Part 2) : 2018 / IEC 62133-2 : 2017, Secondary cells and batteries containing "
-        "alkaline or other non-acid electrolytes — Part 2: Lithium systems.",
-    ], """
-These are the five sources I have used. The first four are the papers in my
-literature survey table, numbered in the same order. The last one is the Indian
-standard that covers sealed lithium cells, and it is the standard whose abuse
-tests my design is aimed at, although I am not claiming any certification.
-""", size=14, numbered=True); n += 1
-
-    closing_slide(prs, n); n += 1
 
     prs.save(OUT)
-    print("saved %s  (%d slides)" % (os.path.basename(OUT), len(prs.slides.__iter__.__self__._sldIdLst)))
-    if WARNINGS:
-        print("\noverflow warnings:")
-        for w in WARNINGS:
+    print("saved %s  (%d slides)" % (os.path.basename(OUT), len(prs.slides._sldIdLst)))
+    if g.WARNINGS:
+        print("\nfit warnings:")
+        for w in g.WARNINGS:
             print("   !!", w)
     else:
-        print("no overflow warnings")
+        print("no fit warnings")
 
 
 if __name__ == "__main__":

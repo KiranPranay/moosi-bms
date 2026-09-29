@@ -124,7 +124,8 @@ slides stay in step with each other.
 
 ```
 docs/reviews/
-├── deck_common.py               slide layout, shared by both decks
+├── deck_common.py               16:9 layout (zeroth review) and shared helpers
+├── deck_green.py                4:3 green Review-1 layout
 ├── diagram_style.py             colours and type, shared by all figures
 ├── template-notes.md            the measurements the decks follow
 ├── assets/logo.png              college logo, cropped from a printed deck
@@ -137,8 +138,8 @@ docs/reviews/
     ├── Predictive_BMS_First_Review.pdf       the version to hand in
     ├── build_slides.py                       builds the pptx
     ├── requirements.txt
-    ├── research-notes.md                     sources behind the numbers
-    └── diagrams/                             one script per figure
+    ├── research-notes.md                     every reference, checked against Crossref
+    └── diagrams/                             r1_*.py are the current figures
 ```
 
 To rebuild a deck from scratch:
@@ -148,7 +149,7 @@ python3 -m venv .venv
 .venv/bin/pip install -r docs/reviews/first-review/requirements.txt
 
 # the first review
-cd docs/reviews/first-review/diagrams && for f in [0-9]*.py; do ../../../../.venv/bin/python "$f"; done
+cd docs/reviews/first-review/diagrams && for f in r1_*.py; do ../../../../.venv/bin/python "$f"; done
 cd .. && ../../../.venv/bin/python build_slides.py
 soffice --headless --convert-to pdf Predictive_BMS_First_Review.pptx
 ```
@@ -162,6 +163,11 @@ one. Every slide carries speaker notes.
 Both decks show up inside the tracker: they are listed in `data.js` under
 `PROJECT_DOCS`, so they preview in the **Project documents** card, and there is a
 small link in the footer.
+
+The Review-1 deck follows the department's green Review-1 template and draws its
+design from `docs/current-architecture.md` (revision 2.1). The older numbered
+diagrams in `first-review/diagrams/` belong to the earlier design and are no longer
+used in the deck.
 
 The review decks are historical submissions. For construction, the authoritative
 documents are `docs/current-architecture.md`, `docs/current-architecture.svg`,

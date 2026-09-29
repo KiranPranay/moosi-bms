@@ -31,8 +31,10 @@ docs: [
   price; owned stock remains costed and shipping and lab tools are excluded
 - `sld-placeholder.svg` — obsolete placeholder retained only as an unused archive
 
-The first-review diagrams are historical. Do not use them as construction
-instructions; the `current-architecture.*` files are the build authority.
+The numbered first-review diagrams (`01_…` to `10_…`) are historical. The
+Review-1 deck now uses the `r1_…` figures, which are drawn from
+`current-architecture.md`. Even so, the `current-architecture.*` files remain
+the build authority.
 
 Anything referenced in `data.js` with `pending: true` has no file here yet —
 it renders as a soft "not filed yet" placeholder rather than a broken link.

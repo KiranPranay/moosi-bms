@@ -45,7 +45,7 @@ export const PROJECT_DOCS = [
     id: "doc-review1",
     title: "First Review Presentation",
     file: "./docs/reviews/first-review/Predictive_BMS_First_Review.pdf",
-    note: "The deck for the first review. Slides, diagrams and speaker notes.",
+    note: "Review-1 deck: literature survey, research gap, two-layer design, methodology and timeline.",
     extra: { label: "PowerPoint", file: "./docs/reviews/first-review/Predictive_BMS_First_Review.pptx" },
   },
   {

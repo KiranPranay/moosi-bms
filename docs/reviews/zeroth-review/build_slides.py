@@ -170,8 +170,8 @@ work in separate tasks.
                  "temperature at which each stage begins."],
          ["[2]", "A review of the ways thermal runaway can be predicted early, and "
                  "what each method needs in order to work."],
-         ["[3]", "A warning method that acts when the temperature rise reaches "
-                 "1 °C per second."],
+         ["[3]", "A warning method that combines data clustering with a heat model, "
+                 "and warns 25 minutes before thermal runaway."],
          ["[4]", "A review of what a battery management system does, and which "
                  "problems in it are still open."],
          ["[5]", "The Indian safety standard for sealed lithium cells, and the abuse "
@@ -180,9 +180,9 @@ work in separate tasks.
 These five sources shaped the project. The first explains the physics: the heat
 inside a cell feeds more reaction, which makes more heat, so the temperature
 curve bends upward sharply. The second and fourth show that early warning is a
-known open problem. The third is the closest work to mine and is where the one
-degree per second figure comes from. The last is the standard my design is aimed
-at, although I am not claiming certification.
+known open problem. The third is the closest work to mine: it gives an early
+warning, but it needs training data and fitted models. The last is the standard
+my design is aimed at, although I am not claiming certification.
 """,
         widths=[1.60, 9.60], size=16, row_h=0.78, aligns=["c", "l"]); n += 1
 
@@ -190,13 +190,13 @@ at, although I am not claiming certification.
         "X. Feng, M. Ouyang, X. Liu, L. Lu, Y. Xia and X. He, “Thermal runaway mechanism of "
         "lithium ion battery for electric vehicles: A review,” Energy Storage Materials, "
         "vol. 10, pp. 246–267, 2018.",
-        "X. Zhang, S. Chen, J. Zhu et al., “A critical review of thermal runaway prediction and "
+        "X. Zhang, S. Chen, J. Zhu and Y. Gao, “A critical review of thermal runaway prediction and "
         "early-warning methods for lithium-ion batteries,” Energy Material Advances, "
         "vol. 4, art. 0008, 2023.",
         "Q. Chen, Y. He, N. Fang and G. Yu, “A combined data-driven and model-based algorithm for "
         "accurate battery thermal runaway warning,” Sensors, vol. 24, no. 15, art. 4964, 2024.",
         "A. K. M. A. Habib, M. K. Hasan, G. F. Issa, D. Singh, S. Islam and T. M. Ghazal, "
-        "“Lithium-ion battery management system for electric vehicles: Constraints, challenges "
+        "“Lithium-ion battery management system for electric vehicles: Constraints, challenges, "
         "and recommendations,” Batteries, vol. 9, no. 3, art. 152, 2023.",
         "IS 16046 (Part 2) : 2018 / IEC 62133-2 : 2017, Secondary cells and batteries containing "
         "alkaline or other non-acid electrolytes — Part 2: Lithium systems.",
