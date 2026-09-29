@@ -142,7 +142,7 @@ costs will come in the next review.
 
     table_slide(prs, n, "Implementation and Tools",
         ["Side", "Tool", "What it is used for"],
-        [["Hardware", "Siemens NX", "Modelling the enclosure"],
+        [["Hardware", "FreeCAD", "Modelling the enclosure"],
          ["Hardware", "3D printer, PLA+", "Printing the enclosure"],
          ["Hardware", "Soldering station", "Building the board, perfboard first, then a soldered PCB"],
          ["Hardware", "Multimeter, bench supply", "Measuring and testing the circuit"],

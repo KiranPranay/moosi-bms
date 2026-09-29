@@ -210,7 +210,7 @@ export const PHASES = [
     ],
     docs: [
       { id: "p6-doc-pcb", title: "PCB Layout", file: "./docs/pcb-layout.pdf", note: "Gerber preview and layer stack.", pending: true },
-      { id: "p6-doc-enclosure", title: "NX Enclosure Model", file: "./docs/enclosure.stp", note: "STEP export for printing.", pending: true },
+      { id: "p6-doc-enclosure", title: "FreeCAD Enclosure Model", file: "./docs/enclosure.stp", note: "STEP export for printing.", pending: true },
     ],
     docRefs: ["doc-bom", "doc-costing", "doc-sld", "doc-architecture", "doc-build-sequence"],
     tasks: [

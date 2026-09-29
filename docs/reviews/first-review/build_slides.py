@@ -300,7 +300,7 @@ pull-ups, so if the ESP32 resets or crashes, both branches disconnect.
          ["Software", "ESP-IDF with C++", "Firmware framework and language"],
          ["Software", "FreeRTOS", "Sensor, safety and telemetry tasks"],
          ["Software", "HTML, CSS, JavaScript", "The Wi-Fi dashboard"],
-         ["Software", "Siemens NX, Git and GitHub", "Enclosure model, version control"]],
+         ["Software", "FreeCAD, Git and GitHub", "Enclosure model, version control"]],
         """
 This is everything the project uses. On the hardware side the main parts are the ESP32,
 the four cells, the hardware BMS board, the ADS1115 for accurate cell voltages, the
