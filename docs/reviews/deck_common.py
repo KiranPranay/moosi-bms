@@ -315,9 +315,24 @@ def two_image_slide(prs, n, heading, img1, img2, cap1, cap2, note, bullets=None)
     return slide
 
 
+def _cell_text(cell, val, size, bold, align):
+    """A cell holds a string, a {"b": bold lead-in, "t": rest} dict, or a list of
+    those, one paragraph each."""
+    parts = val if isinstance(val, (list, tuple)) else [val]
+    tf = cell.text_frame
+    for k, part in enumerate(parts):
+        p = tf.paragraphs[0] if k == 0 else tf.add_paragraph()
+        p.alignment = PP_ALIGN.CENTER if align == "c" else PP_ALIGN.LEFT
+        if isinstance(part, dict):
+            run(p, part["b"], size, bold=True)
+            run(p, part["t"], size, bold=bold)
+        else:
+            run(p, part, size, bold=bold)
+
+
 def table_slide(prs, n, heading, headers, rows, note, widths,
                 size=15, total_row=False, sub=None, row_h=0.40, aligns=None,
-                statement=None):
+                statement=None, head_size=None, bold_cols=(), legend=None):
     slide = base(prs, heading, n)
     top = BODY_T
     if statement:
@@ -336,7 +351,8 @@ def table_slide(prs, n, heading, headers, rows, note, widths,
     total_w = sum(widths)
     left = (SLIDE_W - total_w) / 2
     nrows = len(rows) + 1
-    height = min(BODY_B - top, row_h * nrows)
+    bottom = BODY_B - (0.62 if legend else 0)
+    height = min(bottom - top, row_h * nrows)
     shape = slide.shapes.add_table(nrows, len(headers), Inches(left), Inches(top),
                                    Inches(total_w), Inches(height))
     table = shape.table
@@ -353,7 +369,7 @@ def table_slide(prs, n, heading, headers, rows, note, widths,
         cell.margin_left = cell.margin_right = Inches(0.07)
         p = cell.text_frame.paragraphs[0]
         p.alignment = PP_ALIGN.CENTER
-        run(p, htext, size, bold=True, color=WHITE)
+        run(p, htext, head_size or size, bold=True, color=WHITE)
 
     for r, row in enumerate(rows, start=1):
         banded = (r % 2 == 0)
@@ -365,12 +381,14 @@ def table_slide(prs, n, heading, headers, rows, note, widths,
             cell.vertical_anchor = MSO_ANCHOR.MIDDLE
             cell.margin_left = cell.margin_right = Inches(0.07)
             cell.margin_top = cell.margin_bottom = Inches(0.03)
-            p = cell.text_frame.paragraphs[0]
-            if aligns:
-                p.alignment = PP_ALIGN.CENTER if aligns[c] == "c" else PP_ALIGN.LEFT
-            else:
-                p.alignment = PP_ALIGN.CENTER if c > 0 else PP_ALIGN.LEFT
-            run(p, val, size, bold=is_total)
+            align = aligns[c] if aligns else ("c" if c > 0 else "l")
+            _cell_text(cell, val, size, is_total or c in bold_cols, align)
+    if legend:
+        _, tf = textbox(slide, BODY_R - 3.2, BODY_B - 0.56, 3.2, 0.56)
+        for k, text in enumerate(legend):
+            p = tf.paragraphs[0] if k == 0 else tf.add_paragraph()
+            p.alignment = PP_ALIGN.RIGHT
+            run(p, text, 15)
     notes(slide, note)
     return slide
 

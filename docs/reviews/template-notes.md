@@ -100,39 +100,3 @@ right = slide number. Our deck follows the same pattern with
 Cropped from a 600 dpi render of page 2 and saved to
 [`assets/logo.png`](assets/logo.png) (448 × 648 px, white made transparent).
 Not downloaded from the web.
-
----
-
-# Review-1 template (green)
-
-The department's Review-1 decks use a different template from the zeroth
-review. It was measured from another team's Review-1 deck, shared as a
-formatting reference. That file lists four students by name with their roll
-numbers, so it is not committed here.
-
-| Property | Value |
-| --- | --- |
-| Page | **4:3**, 10 in × 7.5 in |
-| Top bar | green `#4A7A30` over a thin dark edge, full width |
-| Bottom bar | shorter green bar with bevelled ends |
-| Content heading | Times New Roman, about 40 pt, regular weight, **left-aligned**, no underline |
-| Body | Times New Roman, 18–20 pt, justified bullets |
-| Tables | header `#4F81BD` with bold black text; body rows one flat tint `#D0D8E8`; white rules |
-| Slide number | small grey number beside the bottom bar |
-| Footer text | none |
-
-Title slide: date top right; "Major Project Stage-1 Review-1 Presentation / on"
-in bold navy `#002060`; project title in bold red; the college logo centred;
-"Presented by" with name and roll number on the left; "Supervised by" with the
-guide in blue on the right; then the department in bold purple `#800080` and the
-college in bold navy.
-
-Slide order in the reference: Title · Contents · Abstract · Problem Statement ·
-Literature Survey (split over two pages when long) · Problem Analysis + Research
-Gap · Objectives · Methodology · Block Diagram · Individual Contribution ·
-Project Timeline · References · Thank You. Our deck follows the same order. It
-gives the schematic its own slide (the reference's contents list names
-"Schematic Diagram / Block Diagram") and adds one slide the reference does not
-have: Hardware and Software Requirements.
-
-The slide layout lives in [`deck_green.py`](deck_green.py).

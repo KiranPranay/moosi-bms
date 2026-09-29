@@ -1,11 +1,11 @@
-"""Build the Review-1 presentation.
+"""Build the First Review presentation.
 
     python build_slides.py
 
-The layout follows the department's Review-1 template (4:3, green bars, blue
-tables) through ../deck_green.py. The engineering content follows the build
-authority, docs/current-architecture.md (revision 2.1). Every reference was
-checked against Crossref and OpenAlex; see research-notes.md.
+The slides use the same design as the zeroth review, through ../deck_common.py.
+The engineering content follows the build authority, docs/current-architecture.md
+(revision 2.1). Every reference was checked against Crossref and its abstract
+read; see research-notes.md.
 """
 import os
 import sys
@@ -13,23 +13,25 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 
-import deck_green as g                                        # noqa: E402
+from deck_common import (                                    # noqa: E402
+    Presentation, Inches, configure, WARNINGS, SLIDE_W, SLIDE_H,
+    title_slide, content_slide, two_section_slide, image_slide,
+    table_slide, closing_slide,
+)
 
 OUT = os.path.join(HERE, "Predictive_BMS_First_Review.pptx")
 
-g.configure(
+configure(
+    review_label="First Review-2026-27",
     export_date="29-09-2026",
     diagram_dir=os.path.join(HERE, "diagrams"),
-    review_heading="Major Project Stage-1 Review-1 Presentation",
+    review_heading="Major Project Stage-1 First Review Presentation",
     title_lines=["Predictive Thermal Battery Management System",
                  "for Li-ion Battery Packs"],
-    presenter="Ms. Muskan Sulathana",
-    roll_no="____________",
-    supervisor_lines=["Rupesh", "EEE Department"],
 )
 
 LIT_HEAD = ["S.No", "Paper Title", "Outcomes", "Limitation / Research Gap"]
-LIT_W = [0.62, 2.78, 2.90, 2.90]
+LIT_W = [0.80, 3.35, 3.85, 3.85]
 
 LITERATURE = [
     ["[1]", "Thermal runaway mechanism of lithium ion battery for electric vehicles: A review",
@@ -128,18 +130,20 @@ REFERENCES = [
 
 
 def build():
-    prs = g.new_presentation()
+    prs = Presentation()
+    prs.slide_width = Inches(SLIDE_W)
+    prs.slide_height = Inches(SLIDE_H)
     n = 1
 
-    g.title_slide(prs, """
-Good morning. I am Muskan Sulathana, and this is my Review-1 presentation. My project
-is a battery management system for a small lithium-ion pack that watches how fast the
+    title_slide(prs, n, """
+Good morning. I am Muskan Sulathana, and this is my first review. My project is a
+battery management system for a small lithium-ion pack that watches how fast the
 cells are warming up, not only how hot they are. Since the zeroth review I have
 finished the literature survey and the full design of the system, and I will take you
 through both.
 """); n += 1
 
-    g.bullet_slide(prs, n, "Contents", [
+    content_slide(prs, n, "Contents", [
         "Abstract", "Problem Statement", "Literature Survey",
         "Problem Analysis / Research Gap", "Objectives", "Methodology",
         "Block Diagram / Schematic Diagram", "Hardware and Software Requirements",
@@ -149,9 +153,9 @@ This is the order I will follow. I start with a short summary of the project and
 problem, then the papers I studied and the gap they leave. After that I explain the
 objectives, the method and the design, and finish with my progress and the plan for
 the coming months.
-""", size=21, gap_pt=3, justify=False, top=1.40, heading_size=44); n += 1
+""", size=17, numbered=True, number_format="%d.  "); n += 1
 
-    g.bullet_slide(prs, n, "Abstract", [
+    content_slide(prs, n, "Abstract", [
         "Lithium-ion cells store a lot of energy in a small space. A cell that overheats "
         "can go into thermal runaway, where the heat it makes drives it hotter still.",
         "Most low-cost battery protection boards act only on voltage and current, and treat "
@@ -170,9 +174,9 @@ is not enough. The third and fourth describe what I am building: a hardware laye
 protects the cells on its own, and an ESP32 layer that watches the temperature trend.
 The last point is how it acts: it disconnects only the unsafe direction and keeps the
 fault latched until someone checks it.
-""", size=18, gap_pt=11); n += 1
+""", size=17); n += 1
 
-    g.bullet_slide(prs, n, "Problem Statement", [
+    content_slide(prs, n, "Problem Statement", [
         "Lithium-ion packs are used in more and more devices, and one overheating cell can "
         "lead to fire or explosion through thermal runaway.",
         "Most low-cost protection boards act only on voltage and current. Temperature, if "
@@ -189,26 +193,28 @@ signal, because it tells you a cell is hot, never that it is becoming hot. The s
 is dependence: if everything relies on one controller, one crash removes all
 protection. The third is bluntness: most boards cut everything, even when only
 charging is unsafe. My design tries to answer all three.
-""", size=18, gap_pt=12); n += 1
+""", size=17); n += 1
 
-    g.table_slide(prs, n, "Literature Survey", LIT_HEAD, LITERATURE[:5], LIT_W, """
+    table_slide(prs, n, "Literature Survey", LIT_HEAD, LITERATURE[:5], """
 These are the first five papers. The first explains the physics of thermal runaway. The
 next three set out what a battery management system should do and what can go wrong,
 including the point that the protection inside an 18650 cell is only a last resort. The
 fifth is a review of early-warning methods, and it shows that most of them need detailed
 models, large data sets or artificial intelligence.
-""", size=13, head_size=14, aligns=["c", "l", "l", "l"], top=1.40); n += 1
+""", LIT_W, size=13, head_size=14, row_h=0.86, aligns=["c", "l", "l", "l"],
+        bold_cols=(0,)); n += 1
 
-    g.table_slide(prs, n, None, LIT_HEAD, LITERATURE[5:], LIT_W, """
+    table_slide(prs, n, "Literature Survey (contd.)", LIT_HEAD, LITERATURE[5:], """
 These are the next five. Papers six to eight are actual warning methods. They work,
 but they rely on comparing many cells, on a trained neural network, or on fitted models.
 Paper eight is often quoted for a limit of one degree per second, but in that paper it
 is the rule used to confirm that runaway has already happened, not an early warning.
 Paper nine shows that a sensor on the surface always reads cooler than the core, and
 paper ten moves the analysis to the cloud, which fails when the network does.
-""", size=13, head_size=14, aligns=["c", "l", "l", "l"], top=0.55); n += 1
+""", LIT_W, size=13, head_size=14, row_h=0.86, aligns=["c", "l", "l", "l"],
+        bold_cols=(0,)); n += 1
 
-    g.two_section_slide(prs, n,
+    two_section_slide(prs, n,
         "Problem Analysis", [
             "Existing studies explain how thermal runaway builds up through heat-producing "
             "reactions [1], and show the cell core can be hotter than its surface [9].",
@@ -231,9 +237,9 @@ have: many cells to compare, trained models or a cloud connection. And the cheap
 protection boards that small packs do have ignore temperature entirely. So the gap is a
 simple trend-based warning that runs on the board, backed by protection that does not
 depend on it.
-""", size=17, gap_pt=6); n += 1
+""", size=17); n += 1
 
-    g.bullet_slide(prs, n, "Objectives", [
+    content_slide(prs, n, "Objectives", [
         "To study thermal runaway in lithium-ion cells and the methods used to detect it early.",
         "To design a two-layer protection system: an independent hardware BMS, and an ESP32 "
         "supervisor that can disconnect charging and discharging separately.",
@@ -249,9 +255,9 @@ first two are about understanding the problem and designing the answer, and both
 done. The third and fourth are the hardware and firmware work for the coming months.
 The last one makes the system visible, but I have deliberately kept it out of the
 safety chain.
-""", size=18, gap_pt=13); n += 1
+""", size=17); n += 1
 
-    g.image_slide(prs, n, "Methodology", "r1_methodology.png", """
+    image_slide(prs, n, "Methodology", "r1_methodology.png", """
 This is how the controller works, five times every second. It reads the four cell taps,
 the pack current and the four temperatures, removes noise with a median filter and a
 ten-second low-pass filter, and then works out the rate of temperature rise by fitting a
@@ -259,33 +265,29 @@ straight line over the last thirty seconds. Before trusting any reading it check
 the sensors are plausible. Then it compares everything with the trip limits and the
 warning limits. A trip opens only the relay for the unsafe direction and stays latched
 until a manual reset.
-""", box=(0.35, 1.35, 9.30, 5.60)); n += 1
+"""); n += 1
 
-    g.image_slide(prs, n, "Block Diagram", "r1_block_diagram.png", """
+    image_slide(prs, n, "Block Diagram", "r1_block_diagram.png", """
 The design has two layers. Layer A, at the top, is a hardware BMS board connected
 directly to the cells. It handles over-voltage, under-voltage, over-current and short
 circuit on its own, and it keeps working even if the ESP32 or the Wi-Fi fails. Layer B
 is the ESP32 supervisor. It reads the ADS1115 for the cell voltages, the INA226 for the
 current and four thermistors for temperature, and it drives two relays that connect the
 load and the charger separately.
-""", box=(0.35, 1.35, 9.30, 5.60)); n += 1
+"""); n += 1
 
-    slide = g.image_slide(prs, n, "Schematic Diagram", "r1_schematic.png", """
+    image_slide(prs, n, "Schematic Diagram", "r1_schematic.png", """
 This is the power path. The cells connect to the hardware BMS through five balance taps.
 The protected positive goes through a 7.5 ampere fuse and a 5 milliohm shunt, where the
 INA226 measures the current, and then to the load and the charger. Each branch has its
 own relay in the negative return. Both relays are normally open and held off by
 pull-ups, so if the ESP32 resets or crashes, both branches disconnect.
-""", box=(0.35, 1.40, 9.30, 2.95))
-    _, tf = g.textbox(slide, g.BODY_L, 4.62, g.BODY_R - g.BODY_L, 2.20)
-    g._bullets(tf, [
+""", bullets=[
         "The hardware BMS protects the cells on its own, even if the ESP32 or Wi-Fi fails.",
-        "The 7.5 A fuse sits at the pack positive; the 5 mΩ shunt carries all branch current.",
-        "Each relay is normally open and held off by a pull-up, so a reset disconnects both.",
-    ], 17, 8, justify=False)
-    n += 1
+        "Each relay is normally open and held off by a pull-up, so a reset disconnects both branches.",
+    ]); n += 1
 
-    g.table_slide(prs, n, "Hardware and Software Requirements",
+    table_slide(prs, n, "Hardware and Software Requirements",
         ["Type", "Item", "Used for"],
         [["Hardware", "ESP32-WROOM-32 DevKit", "Sensing, dT/dt, relay control and Wi-Fi"],
          ["Hardware", "4 × NCR18650GA 3300 mAh", "The 4S1P pack, with a 16.8 V 1.5 A charger"],
@@ -299,18 +301,17 @@ pull-ups, so if the ESP32 resets or crashes, both branches disconnect.
          ["Software", "FreeRTOS", "Sensor, safety and telemetry tasks"],
          ["Software", "HTML, CSS, JavaScript", "The Wi-Fi dashboard"],
          ["Software", "Siemens NX, Git and GitHub", "Enclosure model, version control"]],
-        [1.30, 3.30, 4.60], """
+        """
 This is everything the project uses. On the hardware side the main parts are the ESP32,
 the four cells, the hardware BMS board, the ADS1115 for accurate cell voltages, the
 INA226 for current and the four thermistors. The relay module gives the separate charge
 and load control. On the software side the firmware is written in C++ on ESP-IDF, with
 FreeRTOS running the sensing, safety and telemetry work as separate tasks.
-""", size=12.5, head_size=14, aligns=["c", "l", "l"], top=1.38, row_h=0.41,
-        heading_size=34); n += 1
+""", [2.00, 4.20, 5.60], size=14, row_h=0.39, aligns=["c", "l", "l"]); n += 1
 
-    contrib = g.table_slide(prs, n, "Individual Contribution",
+    slide = table_slide(prs, n, "Individual Contribution",
         ["Member", "Contributions"],
-        [[["Ms. Muskan Sulathana", "", "(individual project)"],
+        [[["Ms. Muskan Sulathana", "(individual project)"],
           "Studied research papers on thermal runaway, early-warning methods and BMS design, "
           "and identified the research gap."],
          ["", "Designed the two-layer protection: an independent hardware BMS and an ESP32 "
@@ -320,53 +321,55 @@ FreeRTOS running the sensing, safety and telemetry work as separate tasks.
          ["", "Prepared a twelve-stage build and test plan, in which the cells are added only "
               "after low-voltage testing."],
          ["", "Prepared the project documents and this presentation."]],
-        [2.60, 6.40], """
+        """
 This is an individual project, so all of the work so far is mine. The main pieces are
 the literature survey, the two-layer design, the component selection and costing, and a
 staged build and test plan. That plan matters for safety: the lithium cells are only
 connected after every sensor and both relays have been tested at low voltage.
-""", size=13, head_size=14, aligns=["c", "l"], top=1.60, row_h=0.86)
-    table = [s for s in contrib.shapes if s.has_table][0].table
+""", [3.30, 8.40], size=15, row_h=0.80, aligns=["c", "l"])
+    table = [s for s in slide.shapes if s.has_table][0].table
     table.cell(1, 0).merge(table.cell(5, 0))
     n += 1
 
-    g.table_slide(prs, n, "Project Timeline",
+    table_slide(prs, n, "Project Timeline",
         ["Activity", "Month 1", "Month 2", "Month 3", "Month 4", "Month 5"],
         [[{"b": "Objective 1: ", "t": "Literature Survey & System Study"}, "✓", "✓", "", "", ""],
          [{"b": "Objective 2: ", "t": "Two-Layer Design & Component Selection"}, "✗", "✓", "", "", ""],
          [{"b": "Objective 3: ", "t": "Sensing Hardware, Pack Assembly & Calibration"}, "✗", "✗", "", "", ""],
          [{"b": "Objective 4: ", "t": "dT/dt Estimation & Safety State Machine"}, "✗", "✗", "", "", ""],
          [{"b": "Objective 5: ", "t": "Wi-Fi Dashboard, Testing & Documentation"}, "✗", "✗", "", "", ""]],
-        [3.20, 1.20, 1.20, 1.20, 1.20, 1.20], """
+        """
 This is where I am. The literature survey was done over the first two months, and the
 two-layer design and component selection were finished in the second month. The
 remaining three objectives are the build: assembling and calibrating the sensing
 hardware, writing and testing the firmware, and then the dashboard, full testing and
 documentation.
-""", size=15, head_size=15, aligns=["l", "c", "c", "c", "c", "c"], top=1.55, row_h=0.80,
-        bold_first_col=False, legend=["✓ = Completed", "✗ = Yet to be done"]); n += 1
+""", [4.80, 1.40, 1.40, 1.40, 1.40, 1.40], size=15, row_h=0.74,
+        aligns=["l", "c", "c", "c", "c", "c"],
+        legend=["✓ = Completed", "✗ = Yet to be done"]); n += 1
 
-    g.references_slide(prs, n, "References", REFERENCES[:5], 1, """
+    content_slide(prs, n, "References", REFERENCES[:5], """
 These are the first five references, in IEEE style, numbered as in the survey tables.
-""", size=14); n += 1
+""", size=14, numbered=True); n += 1
 
-    g.references_slide(prs, n, None, REFERENCES[5:], 6, """
+    refs = content_slide(prs, n, "References (contd.)", REFERENCES[5:], """
 These are references six to ten. Seven of the ten are IEEE publications.
-""", size=14); n += 1
+""", size=14, numbered=True)
+    # continue the numbering from the previous page
+    for i, p in enumerate([s for s in refs.shapes if s.has_text_frame][-1].text_frame.paragraphs):
+        p.runs[0].text = "[%d]  " % (i + 6)
+    n += 1
 
-    g.thank_you_slide(prs, n, """
-Thank you. I am happy to take any questions on the design, the choice of limits or the
-plan for testing.
-"""); n += 1
+    closing_slide(prs, n); n += 1
 
     prs.save(OUT)
     print("saved %s  (%d slides)" % (os.path.basename(OUT), len(prs.slides._sldIdLst)))
-    if g.WARNINGS:
-        print("\nfit warnings:")
-        for w in g.WARNINGS:
+    if WARNINGS:
+        print("\noverflow warnings:")
+        for w in WARNINGS:
             print("   !!", w)
     else:
-        print("no fit warnings")
+        print("no overflow warnings")
 
 
 if __name__ == "__main__":

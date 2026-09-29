@@ -124,8 +124,7 @@ slides stay in step with each other.
 
 ```
 docs/reviews/
-├── deck_common.py               16:9 layout (zeroth review) and shared helpers
-├── deck_green.py                4:3 green Review-1 layout
+├── deck_common.py               slide layout, shared by both decks
 ├── diagram_style.py             colours and type, shared by all figures
 ├── template-notes.md            the measurements the decks follow
 ├── assets/logo.png              college logo, cropped from a printed deck
@@ -164,8 +163,8 @@ Both decks show up inside the tracker: they are listed in `data.js` under
 `PROJECT_DOCS`, so they preview in the **Project documents** card, and there is a
 small link in the footer.
 
-The Review-1 deck follows the department's green Review-1 template and draws its
-design from `docs/current-architecture.md` (revision 2.1). The older numbered
+Both decks share the same design. The first-review deck draws its engineering
+content from `docs/current-architecture.md` (revision 2.1). The older numbered
 diagrams in `first-review/diagrams/` belong to the earlier design and are no longer
 used in the deck.
 
