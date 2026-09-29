@@ -177,14 +177,14 @@ def title_slide(prs, n, note):
     _, tf = textbox(slide, 1.65, 3.72, 5.0, 2.4)
     p = tf.paragraphs[0]
     run(p, "Presented by", 18, bold=True)
-    for line in ["", "Ms. Muskan Sulathana", "Roll No.  :  ____________"]:
+    for line in ["", "Ms. Muskan Sulathana", "Roll No.  :  23WH1A0208"]:
         p = tf.add_paragraph()
         run(p, line, 18)
 
     _, tf = textbox(slide, 7.10, 3.72, 5.4, 2.4)
     p = tf.paragraphs[0]
     run(p, "Guide", 18, bold=True)
-    for line in ["", "Rupesh", "Department of EEE",
+    for line in ["", "Dr. M. Rupesh", "Associate Professor", "EEE Department",
                  "BVRIT HYDERABAD College of Engineering", "for Women, Hyderabad"]:
         p = tf.add_paragraph()
         run(p, line, 18)

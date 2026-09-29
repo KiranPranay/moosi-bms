@@ -147,7 +147,7 @@ through both.
         "Abstract", "Problem Statement", "Literature Survey",
         "Problem Analysis / Research Gap", "Objectives", "Methodology",
         "Block Diagram / Schematic Diagram", "Hardware and Software Requirements",
-        "Individual Contribution", "Project Timeline", "References",
+        "Project Timeline", "References",
     ], """
 This is the order I will follow. I start with a short summary of the project and the
 problem, then the papers I studied and the gap they leave. After that I explain the
@@ -308,28 +308,6 @@ INA226 for current and the four thermistors. The relay module gives the separate
 and load control. On the software side the firmware is written in C++ on ESP-IDF, with
 FreeRTOS running the sensing, safety and telemetry work as separate tasks.
 """, [2.00, 4.20, 5.60], size=14, row_h=0.39, aligns=["c", "l", "l"]); n += 1
-
-    slide = table_slide(prs, n, "Individual Contribution",
-        ["Member", "Contributions"],
-        [[["Ms. Muskan Sulathana", "(individual project)"],
-          "Studied research papers on thermal runaway, early-warning methods and BMS design, "
-          "and identified the research gap."],
-         ["", "Designed the two-layer protection: an independent hardware BMS and an ESP32 "
-              "supervisor with separate charge and load relays."],
-         ["", "Selected and costed every component, reconciled the purchase list and recorded "
-              "the parts already in hand."],
-         ["", "Prepared a twelve-stage build and test plan, in which the cells are added only "
-              "after low-voltage testing."],
-         ["", "Prepared the project documents and this presentation."]],
-        """
-This is an individual project, so all of the work so far is mine. The main pieces are
-the literature survey, the two-layer design, the component selection and costing, and a
-staged build and test plan. That plan matters for safety: the lithium cells are only
-connected after every sensor and both relays have been tested at low voltage.
-""", [3.30, 8.40], size=15, row_h=0.80, aligns=["c", "l"])
-    table = [s for s in slide.shapes if s.has_table][0].table
-    table.cell(1, 0).merge(table.cell(5, 0))
-    n += 1
 
     table_slide(prs, n, "Project Timeline",
         ["Activity", "Month 1", "Month 2", "Month 3", "Month 4", "Month 5"],
