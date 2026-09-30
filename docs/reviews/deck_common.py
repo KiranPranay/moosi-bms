@@ -54,10 +54,38 @@ REVIEW_HEADING = ""    # e.g. "Major Project Stage-1 First Review Presentation"
 
 WARNINGS = []
 
+# "classic" is the 16:9 template above. "banded" is the 4:3 design the department
+# used for the first review: green bars top and bottom, large left-aligned
+# headings, blue tables. See template-notes.md.
+THEME = "classic"
+TABLE_HEAD, TABLE_CELL = ACCENT_NAVY, WHITE
+BAR_GREEN = RGBColor(0x4F, 0x7A, 0x28)
+BAR_BLACK = RGBColor(0x11, 0x11, 0x11)
+TITLE_RED = RGBColor(0xFF, 0x00, 0x00)
+DEPT_PURPLE = RGBColor(0x7F, 0x00, 0x7F)
+COLLEGE_NAVY = RGBColor(0x1F, 0x38, 0x64)
 
-def configure(review_label, export_date, diagram_dir, review_heading, title_lines):
+
+def _use_banded():
+    global THEME, SLIDE_W, HEAD_T, HEAD_H, HEAD_SIZE, BODY_L, BODY_R, BODY_T, BODY_B
+    global IMG_L, IMG_R, IMG_T, IMG_B, TABLE_HEAD, TABLE_CELL, TABLE_BAND
+    THEME = "banded"
+    SLIDE_W = 10.0
+    HEAD_T, HEAD_H, HEAD_SIZE = 0.50, 0.70, 32
+    BODY_L, BODY_R = 0.62, 9.45
+    BODY_T, BODY_B = 1.38, 6.80
+    IMG_L, IMG_R = 0.40, 9.60
+    IMG_T, IMG_B = 1.32, 6.82
+    TABLE_HEAD = RGBColor(0x4F, 0x81, 0xBD)
+    TABLE_CELL = TABLE_BAND = RGBColor(0xD0, 0xD8, 0xE8)
+
+
+def configure(review_label, export_date, diagram_dir, review_heading, title_lines,
+              theme="classic"):
     """Set everything that differs between one review deck and the next."""
     global REVIEW_LABEL, EXPORT_DATE, DIAG, REVIEW_HEADING, TITLE_LINES
+    if theme == "banded":
+        _use_banded()
     REVIEW_LABEL = review_label
     EXPORT_DATE = export_date
     DIAG = diagram_dir
@@ -102,6 +130,8 @@ def set_bullet(p, char="•", font=BULLET_FONT, indent_in=0.31):
     pPr.append(bu)
     bc = pPr.makeelement(qn("a:buChar"), {"char": char})
     pPr.append(bc)
+    if THEME == "banded":
+        p.alignment = PP_ALIGN.JUSTIFY
 
 
 def no_bullet(p):
@@ -125,16 +155,59 @@ def check_overflow(name, text_lines, size, width_in, height_in):
 
 
 # ── slide furniture ─────────────────────────────────────────────────────
+def heading_box(slide, heading, top):
+    if THEME == "banded":
+        _, tf = textbox(slide, BODY_L - 0.12, top, BODY_R - BODY_L + 0.12, HEAD_H)
+        run(tf.paragraphs[0], heading, HEAD_SIZE, font=HEADING_FONT)
+        return
+    _, tf = textbox(slide, 1.30, top, SLIDE_W - 2.60, HEAD_H)
+    p = tf.paragraphs[0]
+    p.alignment = PP_ALIGN.CENTER
+    run(p, heading, HEAD_SIZE, bold=True, font=HEADING_FONT, underline=True)
+
+
+def _poly(slide, points, color):
+    fb = slide.shapes.build_freeform(Inches(points[0][0]), Inches(points[0][1]))
+    fb.add_line_segments([(Inches(x), Inches(y)) for x, y in points[1:]], close=True)
+    shape = fb.convert_to_shape()
+    shape.fill.solid()
+    shape.fill.fore_color.rgb = color
+    shape.line.fill.background()
+    shape.shadow.inherit = False
+    return shape
+
+
+def bars(slide, wide=False):
+    """The green bars of the banded design. The title slide uses the wide pair."""
+    if wide:
+        _poly(slide, [(0.22, 0.04), (9.78, 0.04), (9.50, 0.34), (0.50, 0.34)], BAR_BLACK)
+        _poly(slide, [(0.30, 0.04), (9.70, 0.04), (9.48, 0.27), (0.52, 0.27)], BAR_GREEN)
+        l, r = 0.25, 9.85
+    else:
+        _poly(slide, [(0.17, 0.06), (9.83, 0.06), (9.83, 0.28), (9.78, 0.33),
+                      (0.17, 0.33)], BAR_BLACK)
+        _poly(slide, [(0.17, 0.06), (9.83, 0.06), (9.83, 0.27), (0.17, 0.27)], BAR_GREEN)
+        l, r = 0.95, 8.95
+    _poly(slide, [(l + 0.30, 6.98), (r - 0.35, 6.98), (r, 7.30), (l, 7.30)], BAR_BLACK)
+    _poly(slide, [(l + 0.37, 7.04), (r - 0.42, 7.04), (r - 0.15, 7.30), (l + 0.15, 7.30)],
+          BAR_GREEN)
+
+
 def base(prs, heading=None, number=None):
     slide = prs.slides.add_slide(prs.slide_layouts[6])          # blank
-    slide.shapes.add_picture(LOGO, Inches(LOGO_L), Inches(LOGO_T),
-                             Inches(LOGO_W), Inches(LOGO_H))
+    if THEME == "banded":
+        bars(slide, wide=(number == 1))
+        if number is not None and number > 1:
+            _, tf = textbox(slide, 9.05, 7.02, 0.60, 0.28)
+            p = tf.paragraphs[0]
+            p.alignment = PP_ALIGN.RIGHT
+            run(p, str(number), FOOT_SIZE, font=HEADING_FONT)
+    else:
+        slide.shapes.add_picture(LOGO, Inches(LOGO_L), Inches(LOGO_T),
+                                 Inches(LOGO_W), Inches(LOGO_H))
     if heading:
-        _, tf = textbox(slide, 1.30, HEAD_T, SLIDE_W - 2.60, HEAD_H)
-        p = tf.paragraphs[0]
-        p.alignment = PP_ALIGN.CENTER
-        run(p, heading, HEAD_SIZE, bold=True, font=HEADING_FONT, underline=True)
-    if number is not None:
+        heading_box(slide, heading, HEAD_T)
+    if number is not None and THEME != "banded":
         foot(slide, number)
     return slide
 
@@ -159,7 +232,63 @@ def notes(slide, text):
 
 
 # ── slide builders ──────────────────────────────────────────────────────
+def _banded_title_slide(prs, n, note):
+    slide = base(prs, number=n)
+
+    _, tf = textbox(slide, 0.50, 0.45, SLIDE_W - 1.00, 0.75)
+    for i, line in enumerate([REVIEW_HEADING, "on"]):
+        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+        p.alignment = PP_ALIGN.CENTER
+        run(p, line, 18, bold=True, color=COLLEGE_NAVY, font=HEADING_FONT)
+
+    _, tf = textbox(slide, 8.30, 0.78, 1.20, 0.28)
+    p = tf.paragraphs[0]
+    p.alignment = PP_ALIGN.RIGHT
+    run(p, EXPORT_DATE, 12)
+
+    _, tf = textbox(slide, 0.40, 1.12, SLIDE_W - 0.80, 1.00)
+    for i, line in enumerate(TITLE_LINES):
+        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+        p.alignment = PP_ALIGN.CENTER
+        run(p, line, 24, bold=True, color=TITLE_RED, font=HEADING_FONT)
+
+    logo_h = 1.45
+    logo_w = logo_h * LOGO_W / LOGO_H
+    slide.shapes.add_picture(LOGO, Inches((SLIDE_W - logo_w) / 2), Inches(2.18),
+                             Inches(logo_w), Inches(logo_h))
+
+    _, tf = textbox(slide, 1.55, 3.95, 3.8, 1.5)
+    run(tf.paragraphs[0], "Presented by", 18, bold=True)
+    for line in ["Ms. Muskan Sulathana", "Roll No.  :  23WH1A0208"]:
+        p = tf.add_paragraph()
+        p.space_before = Pt(4)
+        run(p, line, 16)
+
+    _, tf = textbox(slide, 5.60, 3.95, 3.6, 1.5)
+    p = tf.paragraphs[0]
+    p.alignment = PP_ALIGN.CENTER
+    run(p, "Guide", 18, bold=True)
+    for line in ["Dr. M. Rupesh", "Associate Professor,", "EEE Department"]:
+        p = tf.add_paragraph()
+        p.alignment = PP_ALIGN.CENTER
+        p.space_before = Pt(2)
+        run(p, line, 16)
+
+    _, tf = textbox(slide, 0.30, 5.95, SLIDE_W - 0.60, 0.90)
+    for i, (line, color) in enumerate((
+            ("Department of Electrical & Electronics Engineering", DEPT_PURPLE),
+            ("BVRIT HYDERABAD College of Engineering for Women", COLLEGE_NAVY))):
+        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+        p.alignment = PP_ALIGN.CENTER
+        run(p, line, 22, bold=True, color=color, font=HEADING_FONT)
+
+    notes(slide, note)
+    return slide
+
+
 def title_slide(prs, n, note):
+    if THEME == "banded":
+        return _banded_title_slide(prs, n, note)
     slide = base(prs, number=n)
 
     _, tf = textbox(slide, 1.30, 0.83, SLIDE_W - 2.60, 0.90)
@@ -212,6 +341,8 @@ def content_slide(prs, n, heading, bullets, note, size=BODY_SIZE, sub=None,
             pPr = p._p.get_or_add_pPr()
             pPr.set("marL", str(Emu(Inches(0.42)).emu))
             pPr.set("indent", str(-Emu(Inches(0.42)).emu))
+            if THEME == "banded":
+                p.alignment = PP_ALIGN.JUSTIFY
             run(p, number_format % (i + 1), size)
         else:
             set_bullet(p)
@@ -224,29 +355,27 @@ def content_slide(prs, n, heading, bullets, note, size=BODY_SIZE, sub=None,
 def two_section_slide(prs, n, h1, b1, h2, b2, note, size=BODY_SIZE):
     """Two headings on one slide, the way the template does Problem + Objective."""
     slide = base(prs, h1, n)
+    banded = THEME == "banded"
     top = BODY_T - 0.10
-    for i, b in enumerate(b1):
-        _, tf = textbox(slide, BODY_L, top + i * 0.0, BODY_R - BODY_L, 0.01) if False else (None, None)
-    _, tf = textbox(slide, BODY_L, top, BODY_R - BODY_L, 2.55)
+    first_h = 2.25 if banded else 2.55
+    gap = 10 if banded else 16
+    _, tf = textbox(slide, BODY_L, top, BODY_R - BODY_L, first_h)
     for i, b in enumerate(b1):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.space_after = Pt(16)
+        p.space_after = Pt(gap)
         p.line_spacing = 1.10
         set_bullet(p)
         run(p, b, size)
-    check_overflow(h1, b1, size, BODY_R - BODY_L, 2.55)
+    check_overflow(h1, b1, size, BODY_R - BODY_L, first_h)
 
-    mid = top + 2.75
-    _, tf = textbox(slide, 1.30, mid, SLIDE_W - 2.60, 0.55)
-    p = tf.paragraphs[0]
-    p.alignment = PP_ALIGN.CENTER
-    run(p, h2, HEAD_SIZE, bold=True, font=HEADING_FONT, underline=True)
+    mid = top + first_h + (0.05 if banded else 0.20)
+    heading_box(slide, h2, mid)
 
-    body_top = mid + 0.78
+    body_top = mid + (0.76 if banded else 0.78)
     _, tf = textbox(slide, BODY_L, body_top, BODY_R - BODY_L, BODY_B - body_top)
     for i, b in enumerate(b2):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.space_after = Pt(16)
+        p.space_after = Pt(gap)
         p.line_spacing = 1.10
         set_bullet(p)
         run(p, b, size)
@@ -364,7 +493,7 @@ def table_slide(prs, n, heading, headers, rows, note, widths,
     for c, htext in enumerate(headers):
         cell = table.cell(0, c)
         cell.fill.solid()
-        cell.fill.fore_color.rgb = ACCENT_NAVY
+        cell.fill.fore_color.rgb = TABLE_HEAD
         cell.vertical_anchor = MSO_ANCHOR.MIDDLE
         cell.margin_left = cell.margin_right = Inches(0.07)
         p = cell.text_frame.paragraphs[0]
@@ -377,7 +506,7 @@ def table_slide(prs, n, heading, headers, rows, note, widths,
         for c, val in enumerate(row):
             cell = table.cell(r, c)
             cell.fill.solid()
-            cell.fill.fore_color.rgb = TABLE_BAND if (banded or is_total) else WHITE
+            cell.fill.fore_color.rgb = TABLE_BAND if (banded or is_total) else TABLE_CELL
             cell.vertical_anchor = MSO_ANCHOR.MIDDLE
             cell.margin_left = cell.margin_right = Inches(0.07)
             cell.margin_top = cell.margin_bottom = Inches(0.03)
@@ -435,10 +564,11 @@ def code_slide(prs, n, heading, intro, code, tail, note):
 
 def closing_slide(prs, n):
     slide = base(prs, number=n)
-    _, tf = textbox(slide, 1.30, 2.85, SLIDE_W - 2.60, 1.6)
+    big = THEME == "banded"
+    _, tf = textbox(slide, 1.30, 2.75 if big else 2.85, SLIDE_W - 2.60, 2.0 if big else 1.6)
     p = tf.paragraphs[0]
     p.alignment = PP_ALIGN.CENTER
-    run(p, "Thank You", 40, bold=True, font=HEADING_FONT)
+    run(p, "Thank You", 54 if big else 40, bold=not big, font=HEADING_FONT)
     p = tf.add_paragraph()
     p.alignment = PP_ALIGN.CENTER
     run(p, "", 18)

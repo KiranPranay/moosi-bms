@@ -100,3 +100,26 @@ right = slide number. Our deck follows the same pattern with
 Cropped from a 600 dpi render of page 2 and saved to
 [`assets/logo.png`](assets/logo.png) (448 × 648 px, white made transparent).
 Not downloaded from the web.
+
+---
+
+## First-review design ("banded" theme)
+
+The department's first-review decks use a different look, so the First Review
+deck is built with `configure(..., theme="banded")`. The Zeroth Review deck keeps
+the design described above. The values were read off a classmate's scanned
+first-review deck, which is not committed for the same reason as before.
+
+| Property | Value |
+| --- | --- |
+| Page size | **10 in × 7.5 in (4:3)** |
+| Bars | Green `#4F7A28` on black, full width at the top, a trapezoid at the bottom |
+| Heading | Times New Roman 32 pt, regular, left-aligned, no underline |
+| Body | Times New Roman 16–18 pt, justified, `•` bullets |
+| Tables | Header `#4F81BD` with white bold text, cells `#D0D8E8`, white rules |
+| Footer | Slide number only, right of the bottom bar |
+| Logo | Title slide only, centred under the project title |
+
+Title slide: navy review label, date at the top right, project title in red,
+"Presented by" on the left and the guide on the right, then the department in
+purple `#7F007F` and the college in navy `#1F3864`.

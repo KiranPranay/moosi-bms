@@ -2,7 +2,8 @@
 
     python build_slides.py
 
-The slides use the same design as the zeroth review, through ../deck_common.py.
+The slides use the "banded" 4:3 design from ../deck_common.py: green bars, large
+left-aligned headings and blue tables (see ../template-notes.md).
 The engineering content follows the build authority, docs/current-architecture.md
 (revision 2.1). Every reference was checked against Crossref and its abstract
 read; see research-notes.md.
@@ -13,8 +14,9 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 
+import deck_common                                           # noqa: E402
 from deck_common import (                                    # noqa: E402
-    Presentation, Inches, configure, WARNINGS, SLIDE_W, SLIDE_H,
+    Presentation, Inches, configure, WARNINGS, SLIDE_H,
     title_slide, content_slide, two_section_slide, image_slide,
     table_slide, closing_slide,
 )
@@ -28,10 +30,11 @@ configure(
     review_heading="Major Project Stage-1 First Review Presentation",
     title_lines=["Predictive Thermal Battery Management System",
                  "for Li-ion Battery Packs"],
+    theme="banded",
 )
 
 LIT_HEAD = ["S.No", "Paper Title", "Outcomes", "Limitation / Research Gap"]
-LIT_W = [0.80, 3.35, 3.85, 3.85]
+LIT_W = [0.60, 2.60, 3.05, 3.05]
 
 LITERATURE = [
     ["[1]", "Thermal runaway mechanism of lithium ion battery for electric vehicles: A review",
@@ -131,7 +134,7 @@ REFERENCES = [
 
 def build():
     prs = Presentation()
-    prs.slide_width = Inches(SLIDE_W)
+    prs.slide_width = Inches(deck_common.SLIDE_W)
     prs.slide_height = Inches(SLIDE_H)
     n = 1
 
@@ -153,7 +156,7 @@ This is the order I will follow. I start with a short summary of the project and
 problem, then the papers I studied and the gap they leave. After that I explain the
 objectives, the method and the design, and finish with my progress and the plan for
 the coming months.
-""", size=17, numbered=True, number_format="%d.  "); n += 1
+""", size=18, numbered=True, number_format="%d.  "); n += 1
 
     content_slide(prs, n, "Abstract", [
         "Lithium-ion cells store a lot of energy in a small space. A cell that overheats "
@@ -201,7 +204,7 @@ next three set out what a battery management system should do and what can go wr
 including the point that the protection inside an 18650 cell is only a last resort. The
 fifth is a review of early-warning methods, and it shows that most of them need detailed
 models, large data sets or artificial intelligence.
-""", LIT_W, size=13, head_size=14, row_h=0.86, aligns=["c", "l", "l", "l"],
+""", LIT_W, size=12, head_size=13, row_h=0.86, aligns=["c", "l", "l", "l"],
         bold_cols=(0,)); n += 1
 
     table_slide(prs, n, "Literature Survey (contd.)", LIT_HEAD, LITERATURE[5:], """
@@ -211,7 +214,7 @@ Paper eight is often quoted for a limit of one degree per second, but in that pa
 is the rule used to confirm that runaway has already happened, not an early warning.
 Paper nine shows that a sensor on the surface always reads cooler than the core, and
 paper ten moves the analysis to the cloud, which fails when the network does.
-""", LIT_W, size=13, head_size=14, row_h=0.86, aligns=["c", "l", "l", "l"],
+""", LIT_W, size=12, head_size=13, row_h=0.86, aligns=["c", "l", "l", "l"],
         bold_cols=(0,)); n += 1
 
     two_section_slide(prs, n,
@@ -237,7 +240,7 @@ have: many cells to compare, trained models or a cloud connection. And the cheap
 protection boards that small packs do have ignore temperature entirely. So the gap is a
 simple trend-based warning that runs on the board, backed by protection that does not
 depend on it.
-""", size=17); n += 1
+""", size=16); n += 1
 
     content_slide(prs, n, "Objectives", [
         "To study thermal runaway in lithium-ion cells and the methods used to detect it early.",
@@ -285,7 +288,7 @@ pull-ups, so if the ESP32 resets or crashes, both branches disconnect.
 """, bullets=[
         "The hardware BMS protects the cells on its own, even if the ESP32 or Wi-Fi fails.",
         "Each relay is normally open and held off by a pull-up, so a reset disconnects both branches.",
-    ]); n += 1
+    ], bullet_size=15); n += 1
 
     table_slide(prs, n, "Hardware and Software Requirements",
         ["Type", "Item", "Used for"],
@@ -307,7 +310,7 @@ the four cells, the hardware BMS board, the ADS1115 for accurate cell voltages, 
 INA226 for current and the four thermistors. The relay module gives the separate charge
 and load control. On the software side the firmware is written in C++ on ESP-IDF, with
 FreeRTOS running the sensing, safety and telemetry work as separate tasks.
-""", [2.00, 4.20, 5.60], size=14, row_h=0.39, aligns=["c", "l", "l"]); n += 1
+""", [1.30, 3.30, 4.70], size=14, row_h=0.39, aligns=["c", "l", "l"]); n += 1
 
     table_slide(prs, n, "Project Timeline",
         ["Activity", "Month 1", "Month 2", "Month 3", "Month 4", "Month 5"],
@@ -322,7 +325,7 @@ two-layer design and component selection were finished in the second month. The
 remaining three objectives are the build: assembling and calibrating the sensing
 hardware, writing and testing the firmware, and then the dashboard, full testing and
 documentation.
-""", [4.80, 1.40, 1.40, 1.40, 1.40, 1.40], size=15, row_h=0.74,
+""", [3.80, 1.10, 1.10, 1.10, 1.10, 1.10], size=15, row_h=0.74,
         aligns=["l", "c", "c", "c", "c", "c"],
         legend=["✓ = Completed", "✗ = Yet to be done"]); n += 1
 
