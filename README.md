@@ -127,6 +127,8 @@ docs/reviews/
 ├── deck_common.py               slide layout, shared by both decks
 ├── diagram_style.py             colours and type, shared by all figures
 ├── template-notes.md            the measurements the decks follow
+├── references-explained.md/.pdf what each reference contributes to the slides
+├── build_references.py          builds the PDF from the markdown
 ├── assets/logo.png              college logo, cropped from a printed deck
 ├── zeroth-review/
 │   ├── Predictive_BMS_Zeroth_Review.pptx / .pdf

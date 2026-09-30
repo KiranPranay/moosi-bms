@@ -56,6 +56,12 @@ export const PROJECT_DOCS = [
     extra: { label: "PowerPoint", file: "./docs/reviews/zeroth-review/Predictive_BMS_Zeroth_Review.pptx" },
   },
   {
+    id: "doc-references",
+    title: "References Explained",
+    file: "./docs/reviews/references-explained.pdf",
+    note: "What I took from each reference in the review decks, and where it appears in the slides.",
+  },
+  {
     id: "doc-bom",
     title: "Bill of Materials",
     file: "./docs/bom.csv",
@@ -102,7 +108,7 @@ export const PHASES = [
       { id: "p1-doc-arch", title: "Architecture Diagram", file: "./docs/architecture.png", note: "Block diagram submitted with the synopsis.", pending: true },
       { id: "p1-doc-signoff", title: "Guide Sign-off", file: "./docs/guide-approval.pdf", note: "Scanned approval page.", pending: true },
     ],
-    docRefs: ["doc-abstract", "doc-review1"],
+    docRefs: ["doc-abstract", "doc-review1", "doc-references"],
     tasks: [
       { id: "p1-synopsis",     title: "Synopsis",              done: true  },
       { id: "p1-architecture", title: "Architecture Diagram",  done: true  },
