@@ -6,7 +6,7 @@ Item,Subsystem,Part,Source,Quantity,Cost basis,Amount (INR),Price confidence,Pro
 5,Pack insulation,Positive terminal insulation sheets,Robu,2,2 x 6,12,Cart verified,In cart,Two sheets satisfy minimum line value; four rings used
 6,Pack insulation,Fish paper and pack sleeve,Robu or local,1 set,Budget allowance,150,Budget allowance,Verify before order,Measure welded pack before selecting sleeve
 7,Pack interconnect,Pure nickel strip pack,Existing stock (replacement: Robu),1 pack,1 x 569 replacement value,569,Cart-verified replacement price,Owned stock - no purchase required,50 pieces 0.15x8x100mm; replacement cost retained for reproducibility
-8,Thermal sensing,10k B3950 epoxy bead NTCs,Robu,4,4 x 14,56,Cart verified,In cart,Listing contains one thermistor per ordered unit
+8,Thermal sensing,10k B3950 epoxy bead NTCs,Robu,5,5 x 14,70,Cart verified,Add one to cart,Listing contains one thermistor per ordered unit; four cell sensors plus one ambient sensor (architecture revision 2.2)
 9,Voltage sensing,ADS1115 ADC module,Robu,1,1 x 119,119,Cart verified,In cart,Four cumulative tap channels
 10,Sensing,1% metal-film resistor kit,Robu,1,1 x 389,389,Cart verified,Keep in cart,Confirm 56k and 330k values are included
 11,Sensing,RC filters and ADC clamps,Robu or local,1 set,Budget allowance,100,Budget allowance,Verify before order,Final clamp choice follows leakage test

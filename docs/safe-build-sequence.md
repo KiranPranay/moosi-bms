@@ -32,7 +32,7 @@ Do not use lithium cells yet.
 3. Build one 330kΩ/56kΩ divider, RC filter, and clamp channel.
 4. Sweep its input from 0 to 16.8V with a current-limited bench supply. Compare ADC-derived voltage to a calibrated multimeter at 0V, 4.2V, 8.4V, 12.6V, and 16.8V.
 5. Repeat for all four channels and store coefficients.
-6. Build the four 10k/NTC dividers on GPIO32–35. Verify open and short detection.
+6. Build the five 10k/NTC dividers on GPIO32–36 (four cells and one ambient). Verify open and short detection on every channel.
 7. Modify/bypass the INA226 module's stock shunt and connect the 5mΩ external shunt with Kelvin leads. Calibrate at ±0.25A, ±0.5A, and ±1A using a protected supply/load.
 
 **Pass:** cell-tap error is no more than ±20mV after calibration; current error is no more than ±2% or ±20mA, whichever is larger; every sensor fault is detected.
@@ -115,7 +115,7 @@ Use four isolated cell simulators or four current-limited bench channels if avai
 2. Connect BMS `B-`, then balance taps from lowest to highest exactly as its guide specifies, then `B+`/power conductors.
 3. Confirm pack tap voltages at the BMS connector before insertion.
 4. Insert the 7.5A fuse through a current-limited precharge path appropriate to the controller input capacitance; investigate unexpected inrush.
-5. Verify 5.0V, 3.3V, four cell voltages, four temperatures, and near-zero current.
+5. Verify 5.0V, 3.3V, four cell voltages, four cell temperatures, the ambient temperature, and near-zero current. Online resistance tracking (architecture section 9.4) runs from here.
 6. Let the system log at rest for 30 minutes with relays open.
 
 **Pass:** no component heats, readings remain stable, and quiescent current is documented.
@@ -128,8 +128,10 @@ Use four isolated cell simulators or four current-limited bench channels if avai
 3. Compare INA226 current to the reference load meter.
 4. Use simulated sensor inputs to verify warning and trip thresholds; do not discharge a cell to 2.7V to prove hardware protection.
 5. Confirm a software load trip opens only `K_LOAD`, latches the cause, and keeps telemetry alive.
+6. Fit the thermal model (architecture section 9.1): log a normal 1A and 2A discharge and the cooling curve after each, fit `C_c`, `C_s`, `R_c` and each cell's `R_u`, and store them with the calibration record.
+7. With the fitted model running, repeat the 1A and 2A steps and record the abnormal heat (9.2), the 1- and 5-minute prediction errors (9.3), and the online resistance of each cell (9.4).
 
-**Pass:** wiring, fuse holder, shunt, relays, nickel, and cells remain within the validated temperature limits; 5A operation is stable.
+**Pass:** wiring, fuse holder, shunt, relays, nickel, and cells remain within the validated temperature limits; 5A operation is stable; with the fitted model, abnormal heat stays below the equivalent of 0.25°C/min at every test current, the 5-minute prediction error is no more than 0.5°C RMS, and each cell's online resistance agrees with its Gate 4 value within 15%.
 **Stop:** any connection rises more than 10°C above ambient, cell spread exceeds 50mV under a modest load, or relay voltage drop is abnormal.
 
 ## Gate 10 — controlled charge
@@ -140,8 +142,10 @@ Use four isolated cell simulators or four current-limited bench channels if avai
 4. First test at a lower current if the charger allows; never exceed 1.5A.
 5. Confirm a simulated high-cell or high-temperature condition opens only `K_CHARGE` and latches.
 6. End the first charge early, around 4.10V/cell, then inspect balance and temperature behaviour before any later full charge.
+7. Log abnormal heat and prediction errors (architecture sections 9.2 and 9.3) for every cell throughout the charge.
+8. Pause the charge for 30 minutes at about 3.6V, 3.8V and 4.0V per cell and record the rested voltage and the charge put in, to build the open-circuit-voltage slope table for the leak estimate (9.5).
 
-**Pass:** no cell approaches the 4.15V software limit unexpectedly; cell spread remains controlled; charger terminates correctly.
+**Pass:** no cell approaches the 4.15V software limit unexpectedly; cell spread remains controlled; charger terminates correctly; abnormal heat stays below the equivalent of 0.25°C/min and the 5-minute prediction error is no more than 0.5°C RMS.
 **Stop:** one cell rises faster, any cell exceeds 4.15V, temperature exceeds 40°C, or the charger does not enter CV/taper behaviour.
 
 ## Gate 11 — predictive thermal algorithm validation
@@ -150,9 +154,11 @@ Do **not** create an internal fault or thermal runaway in a live lithium cell.
 
 1. Validate software first with recorded traces and synthetic ramps.
 2. For a physical test, use a power resistor bonded to an aluminium dummy cylinder or a completely separate instrumented thermal mass.
-3. Replay its temperature signal or thermally couple a spare NTC to prove the 0.5°C/min warning and 1.0°C/min trip logic.
-4. Verify noisy data, step changes, disconnected sensors, and flat-line sensors cannot bypass the trip.
-5. Save the complete event record for the report.
+3. Replay its temperature signal or thermally couple a spare NTC to prove the abnormal-heat warning (0.5°C/min, about 0.4W) and trip (1.0°C/min, about 0.75W), the cell-to-cell comparison (0.3 and 0.6°C/min), the 5-minute confirmation (+1.0°C), the time-to-limit and safe-current forecasts, the self-acceleration trip, and the raw 2.0°C/min backstop.
+4. Heat the dummy with zero simulated pack current and confirm the heating is flagged as unexplained. Repeat with a simulated 5A current and the heating the model expects at 5A, and confirm it is not flagged.
+5. Verify noisy data, step changes, disconnected sensors, and flat-line sensors cannot bypass the trip. Lift the NTC off the dummy under simulated load and confirm a sensor-contact fault.
+6. **Emulated soft short on the live pack (supervised, normal operating range only).** With the pack at rest near 3.7V per cell and every cell below 30°C, bond a 47Ω 1W resistor to the middle of one cell and connect it across that cell's balance taps through a fused lead (about 80mA and 0.3W). This copies both signs of a soft internal short, a self-discharge and a heat source on one cell, without creating any fault inside the cell. Confirm that the leak estimate rises in that cell only, that its abnormal heat and 5-minute confirmation error rise, that the energy cross-check agrees, and that the risk level reaches Warning. Remove the resistor at Warning or at once if the cell reaches 40°C, then recharge to rebalance the pack.
+7. Save the complete event record, including the prediction-accuracy record, for the report.
 
 **Pass:** warning/trip timing matches the architecture and both branches fail open on an ambiguous thermal fault.
 **Stop:** testing requires heating an energised cell outside its normal operating range.

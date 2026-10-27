@@ -4,7 +4,7 @@
 // and to file the notes and documents that appear when a card is opened.
 // Bump DATA_VERSION whenever you change the structure.
 
-export const DATA_VERSION = "2.2.0";
+export const DATA_VERSION = "2.3.0";
 
 /* ------------------------------------------------------------------------
    DOCUMENTS
@@ -65,14 +65,14 @@ export const PROJECT_DOCS = [
     id: "doc-bom",
     title: "Bill of Materials",
     file: "./docs/bom.csv",
-    note: "Redesigned 4S1P build BOM: 25 required lines and seven excluded legacy parts. Full replacement value is ₹9,246.19, including owned stock retained for reproducibility.",
+    note: "Redesigned 4S1P build BOM: 25 required lines and seven excluded legacy parts. Full replacement value is ₹9,260.19, including owned stock retained for reproducibility.",
     totalColumn: "Line total (INR)",
   },
   {
     id: "doc-costing",
     title: "Costing Sheet",
     file: "./docs/costing.csv",
-    note: "Full replacement cost is ₹9,246.19: ₹5,873.19 owned stock, ₹2,854.00 in the reconciled Robu cart and ₹519.00 of conditional or unresolved allowances. Shipping and lab tools are excluded.",
+    note: "Full replacement cost is ₹9,260.19: ₹5,873.19 owned stock, ₹2,868.00 in the Robu cart (including the fifth NTC added in architecture revision 2.2) and ₹519.00 of conditional or unresolved allowances. Shipping and lab tools are excluded.",
     totalColumn: "Amount (INR)",
   },
   {
@@ -92,6 +92,12 @@ export const PROJECT_DOCS = [
     title: "Safe Build and Validation Sequence",
     file: "./docs/safe-build-sequence.md",
     note: "Twelve gated stages with acceptance criteria and stop conditions; lithium cells are introduced only after low-voltage validation.",
+  },
+  {
+    id: "doc-phases",
+    title: "Project Plan in Two Phases",
+    file: "./docs/project-phases.pdf",
+    note: "Semester 1: study, design and sensing electronics with no lithium cells (Gates 0–2). Semester 2: pack build, predictive firmware, dashboard and testing (Gates 3–12).",
   },
 ];
 
@@ -122,7 +128,7 @@ export const PHASES = [
     blurb: "Gathering the parts.",
     notes: [
       "Keep every quote and invoice in this phase — the costing sheet is only as good as the paperwork behind it.",
-      "The full replacement BOM is ₹9,246.19. Confirmed owned stock accounts for ₹5,873.19, the reconciled Robu cart is ₹2,854.00, and ₹519.00 remains as conditional or unresolved allowances.",
+      "The full replacement BOM is ₹9,260.19. Confirmed owned stock accounts for ₹5,873.19, the Robu cart is ₹2,868.00 including the fifth (ambient) NTC added in architecture revision 2.2, and ₹519.00 remains as conditional or unresolved allowances.",
       "Owned stock includes four red-rewrapped NCR18650GA cells, pure nickel strip, two perfboards, a suitable 16.8V charger and PETG filament. Replacement prices remain in the BOM so another builder can reproduce the project.",
       "Before ordering, match the 7.5A fuse to its holder. Before assembly, verify the owned charger's CC/CV behaviour, isolation, 16.80V output, plug dimensions and polarity, and qualify the four cells by inspection, resting voltage, capacity and DC resistance.",
     ],
@@ -134,6 +140,7 @@ export const PHASES = [
     tasks: [
       { id: "p2-electronics", title: "Reconcile Robu cart to the redesigned BOM (₹2,854)", done: true },
       { id: "p2-owned-stock", title: "Record owned cells, nickel, perfboards, charger and PETG (₹5,873.19)", done: true },
+      { id: "p2-ntc5",        title: "Add a fifth NTC to the Robu cart for ambient temperature (₹14)", done: false },
       { id: "p2-cells",       title: "Inspect, record and match the existing NCR18650GA set", done: false },
       { id: "p2-protection",  title: "Purchase Robu protection and mechanical cart", done: false },
       { id: "p2-sensing",     title: "Purchase Robu sensing and control cart", done: false },
@@ -158,7 +165,7 @@ export const PHASES = [
     tasks: [
       { id: "p3-pack",      title: "Match cells and qualify spot welds", done: false },
       { id: "p3-sensing",   title: "Validate voltage and current sensing at low voltage", done: false },
-      { id: "p3-ntc",       title: "Calibrate four fast NTC channels", done: false },
+      { id: "p3-ntc",       title: "Calibrate five fast NTC channels (four cells, one ambient)", done: false },
       { id: "p3-failsafe",  title: "Prove reset and sensor-fault relay fail-safe", done: false },
       { id: "p3-bms",       title: "Validate the BMS tap harness before live cells", done: false },
       { id: "p3-assemble",  title: "Weld and insulate the 4S1P pack", done: false },
@@ -182,6 +189,7 @@ export const PHASES = [
       { id: "p4-platformio", title: "Set up the ESP-IDF project",      done: false },
       { id: "p4-analog",     title: "Calibrate ADS1115 / INA226 / NTC acquisition", done: false },
       { id: "p4-roc",        title: "Implement filtered 30s dT/dt estimator", done: false },
+      { id: "p4-model",      title: "Implement Kalman thermal observer, predict-and-confirm, leak estimate, forecasts and risk levels", done: false },
       { id: "p4-cutoff",     title: "Implement latched safety state machine", done: false },
       { id: "p4-plausibility", title: "Implement sensor plausibility and watchdog faults", done: false },
       { id: "p4-eventlog",   title: "Log trips with cause and measurement snapshot", done: false },
@@ -201,7 +209,7 @@ export const PHASES = [
     ],
     tasks: [
       { id: "p5-wifi",      title: "Program Wi-Fi connection",   done: false },
-      { id: "p5-dashboard", title: "Build live telemetry and latched-fault dashboard", done: false },
+      { id: "p5-dashboard", title: "Build live telemetry, forecast, risk-level and latched-fault dashboard", done: false },
       { id: "p5-offline",   title: "Verify all safety functions with Wi-Fi unavailable", done: false },
     ],
   },

@@ -6,7 +6,7 @@ survey come from the paper abstracts as published in OpenAlex. None of the ten
 is retracted.
 
 The engineering values used in the deck (thresholds, pin map, parts) come from
-[`../../current-architecture.md`](../../current-architecture.md), revision 2.1,
+[`../../current-architecture.md`](../../current-architecture.md), revision 2.2,
 not from these papers.
 
 ---
@@ -54,7 +54,9 @@ deck. Both decks are now corrected.
   So 1 °C/s is the rule the authors used to decide that runaway **had already
   happened** in their abuse tests. It is not an early-warning limit. The
   project's own limits are far lower, and are set in `current-architecture.md`
-  (warning at 0.5 °C/min held for 30 s, trip at 1.0 °C/min held for 10 s).
+  (warning at 0.5 °C/min held for 30 s, trip at 1.0 °C/min held for 10 s). From
+  revision 2.2 these limits apply to the heating the thermal model cannot explain,
+  with a raw backstop at 2.0 °C/min.
 - **Habib et al.** has a serial comma in its title: "Constraints, Challenges,
   and Recommendations".
 - **Habib et al. (zeroth review only)** is not carried into Review-1. Its place

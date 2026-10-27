@@ -166,7 +166,7 @@ Both decks show up inside the tracker: they are listed in `data.js` under
 small link in the footer.
 
 Both decks share the same design. The first-review deck draws its engineering
-content from `docs/current-architecture.md` (revision 2.1). The older numbered
+content from `docs/current-architecture.md` (revision 2.2). The older numbered
 diagrams in `first-review/diagrams/` belong to the earlier design and are no longer
 used in the deck.
 
