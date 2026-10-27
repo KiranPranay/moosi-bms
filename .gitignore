@@ -25,3 +25,6 @@ outputs/
 # The base paper (Ojo et al., IEEE TIE 2021) is paywalled and copyrighted.
 # Keep local copies of papers out of this public repo.
 ojo2021*.pdf
+# Other students' documents shared only as format references (they carry
+# other students' names and roll numbers).
+*[Bb]atch*.docx

@@ -15,7 +15,7 @@ These notes let a new Claude Code session, on a new device, carry on where the l
 | Hardware build | Not started. Next step is Gate 0 in `docs/safe-build-sequence.md` |
 | Firmware | **Not written yet.** ESP-IDF, C++ and FreeRTOS are planned |
 | Plan | Two phases: Semester 1 = Gates 0–2 with **no lithium cells**; Semester 2 = Gates 3–12 ([docs/project-phases.pdf](docs/project-phases.pdf)) |
-| Guide's challenge | The guide judged the project "just a sensing system" and asked for a one-page abstract, a benchmark against existing solutions and the Delta X over the base paper. Answered on 27-10-2026 by [docs/abstract.pdf](docs/abstract.pdf) (one page) and [docs/benchmark-delta-x.pdf](docs/benchmark-delta-x.pdf) (10 pages, every calculation and source) |
+| Guide's challenge | The guide judged the project "just a sensing system" and asked for a one-page abstract, a benchmark against existing solutions and the Delta X over the base paper. Answered on 27-10-2026 by [docs/abstract.pdf](docs/abstract.pdf) (one page, also as `.docx`) and [docs/benchmark-delta-x.pdf](docs/benchmark-delta-x.pdf) (10 pages, every calculation and source) |
 
 ## 2. Decisions made in the last session, and why
 
@@ -57,8 +57,12 @@ These notes let a new Claude Code session, on a new device, carry on where the l
 8. `docs/reviews/build_references.py` now builds **any** markdown file to PDF
    (`python build_references.py ../project-phases.md`). It supports `<div markdown="1" class="breakable">`
    for long tables that may break across pages, `class="breakable wide"` for smaller type in six- or seven-column
-   tables, and fenced ```text blocks for worked calculations. `--one-page` (used for the abstract) tightens the
-   type and fails if the PDF runs past one page.
+   tables, and fenced ```text blocks for worked calculations.
+10. **The abstract is a Word file** built by `docs/reviews/build_abstract.py` (python-docx), in the layout of a
+   classmate's abstract the user shared as a format reference: A4, Times New Roman, bold 16 pt centred title,
+   centred "Abstract", justified 12 pt prose, the student's name and roll number in bold to the right, and the
+   guide's signature block. The benchmark and the Delta X are written as prose there; the tables are in
+   `benchmark-delta-x`. The reference `.docx` stays local only (`*[Bb]atch*.docx` is git-ignored).
 9. **Delta X numbers** (all derived from the base paper's own figures; working in `docs/benchmark-delta-x.md`
    section 4): its 0.69 °C threshold inside the 4.5 s feedback window only catches heating above about
    9.2 °C/min (≈ 6.9 W), against our 0.5 °C/min warning (18×) and the 0.2 W 5-minute check (34×); 0.5 % per-sample
@@ -111,7 +115,7 @@ sudo apt install libreoffice poppler-utils imagemagick fonts-liberation fonts-cr
 | Zeroth-review deck | the same in `docs/reviews/zeroth-review` (historical; leave it alone) |
 | Plan PDF | `cd docs/reviews && ../../.venv/bin/python build_references.py ../project-phases.md` |
 | References PDF | `cd docs/reviews && ../../.venv/bin/python build_references.py` |
-| Abstract PDF (one page) | `cd docs/reviews && ../../.venv/bin/python build_references.py --one-page ../abstract.md` |
+| Abstract (`.docx` and PDF, one page) | `cd docs/reviews && ../../.venv/bin/python build_abstract.py` (the text is in `BODY` in the script; it stops if the PDF runs past one page) |
 | Benchmarking and Delta X PDF | `cd docs/reviews && ../../.venv/bin/python build_references.py ../benchmark-delta-x.md` |
 | Tracker site | `python3 -m http.server 8080`, then open <http://localhost:8080> |
 
@@ -141,7 +145,7 @@ and then looking at the pages. `build_slides.py` prints overflow warnings, but i
 | `docs/current-architecture.md` | Build authority, revision 2.2; section 9 is the predictive layer |
 | `docs/safe-build-sequence.md` | Gates 0–12 with pass and stop criteria |
 | `docs/project-phases.md` / `.pdf` | The two-semester plan, for the guide and reviewers |
-| `docs/abstract.md` / `.pdf` | One-page abstract with the benchmark and the Delta X, for the guide |
+| `docs/abstract.docx` / `.pdf` | One-page abstract with the benchmark and the Delta X, for the guide; source is `docs/reviews/build_abstract.py` |
 | `docs/benchmark-delta-x.md` / `.pdf` | Full benchmark (6 products, 7 research methods), Delta X, worked soft-short example, sources |
 | `docs/bom.csv`, `docs/costing.csv` | Parts and costs (₹9,260.19) |
 | `docs/reviews/first-review/` | Review-1 deck, its diagrams, research notes (reference checks) |

@@ -7,6 +7,7 @@ numpy>=1.26
 Pillow>=10.0
 pdfplumber>=0.11        # only used to re-measure the template
 markdown>=3.5          # builds references-explained.pdf
+python-docx>=1.1        # builds docs/abstract.docx
 graphviz>=0.20          # optional; the diagrams here use matplotlib layout
 
 # Also needed, outside pip:
