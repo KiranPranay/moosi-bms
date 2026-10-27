@@ -22,3 +22,6 @@ Major_Project_Review1_Batch*.pdf
 # never go in this public repo.
 Purchase-Indent*.xlsx
 outputs/
+# The base paper (Ojo et al., IEEE TIE 2021) is paywalled and copyrighted.
+# Keep local copies of papers out of this public repo.
+ojo2021*.pdf
