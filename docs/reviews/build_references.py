@@ -2,11 +2,14 @@
 
     python build_references.py                          # references-explained.md
     python build_references.py ../project-phases.md     # any other document
+    python build_references.py --one-page ../abstract.md
 
 The markdown is the source, and the PDF is written next to it. It is turned into a styled HTML page and printed to
-PDF with headless Chrome, so the PDF previews in the tracker like the decks do.
+PDF with headless Chrome, so the PDF previews in the tracker like the decks do. --one-page uses tighter type and
+margins and fails if the result runs past one A4 page.
 """
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -38,19 +41,42 @@ tr:nth-child(even) td { background: #f3f3f3; }
 th:first-child { white-space: nowrap; }
 .byline { color: #333; font-size: 10.5pt; margin: 4px 0 14px; }
 .breakable table { page-break-inside: auto; }  /* long tables: wrap in <div markdown="1" class="breakable"> */
+.wide table { font-size: 9pt; }                 /* tables with six or more columns */
 tr    { page-break-inside: avoid; }
+pre   { font-family: "DejaVu Sans Mono", "Liberation Mono", monospace; font-size: 9.5pt; line-height: 1.4;
+        background: #f3f5f9; border-left: 3px solid #002060; padding: 6px 10px; margin: 8px 0;
+        white-space: pre-wrap; page-break-inside: avoid; }
+"""
+
+ONE_PAGE_CSS = """
+@page { size: A4; margin: 10mm 12mm 9mm 12mm; @bottom-center { content: none; } }
+body  { font-size: 9.6pt; line-height: 1.3; }
+header img { height: 40px; }
+h1    { font-size: 15pt; }
+h2    { font-size: 10.6pt; margin: 7px 0 2px; padding-bottom: 1px; }
+p     { margin: 3px 0; text-align: justify; }
+ul    { margin: 2px 0; padding-left: 16px; }
+li    { margin: 1px 0; }
+table { font-size: 8.3pt; margin: 3px 0 2px; }
+th    { padding: 2px 5px; }
+td    { padding: 1.5px 5px; }
+.byline { font-size: 9pt; margin: 1px 0 4px; }
 """
 
 
-def build(src=SRC):
+def page_count(pdf):
+    return len(re.findall(rb"/Type\s*/Page[^s]", open(pdf, "rb").read()))
+
+
+def build(src=SRC, one_page=False):
     out = os.path.splitext(src)[0] + ".pdf"
     text = open(src, encoding="utf-8").read()
     title, _, rest = text.partition("\n")
     byline, _, body = rest.strip("\n").partition("\n\n")
-    html_body = markdown.markdown(body, extensions=["tables", "md_in_html"])
+    html_body = markdown.markdown(body, extensions=["tables", "md_in_html", "fenced_code"])
     byline_html = markdown.markdown(byline).replace("<p>", '<p class="byline">')
     page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
-<title>{title.lstrip('# ').strip()}</title><style>{CSS}</style></head><body>
+<title>{title.lstrip('# ').strip()}</title><style>{CSS}{ONE_PAGE_CSS if one_page else ""}</style></head><body>
 <header><img src="file://{LOGO}" alt=""><h1>{title.lstrip('# ').strip()}</h1></header>
 {byline_html}
 {html_body}
@@ -64,9 +90,14 @@ def build(src=SRC):
                     "--print-to-pdf=" + out, "file://" + tmp],
                    check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     os.unlink(tmp)
-    print("saved", os.path.basename(out))
+    pages = page_count(out)
+    print("saved", os.path.basename(out), f"({pages} page{'s' if pages != 1 else ''})")
+    if one_page and pages != 1:
+        sys.exit(f"{os.path.basename(out)} must fit on one page; shorten the source")
 
 
 if __name__ == "__main__":
-    for path in sys.argv[1:] or [SRC]:
-        build(os.path.abspath(path))
+    args = sys.argv[1:]
+    one_page = "--one-page" in args
+    for path in [a for a in args if a != "--one-page"] or [SRC]:
+        build(os.path.abspath(path), one_page)

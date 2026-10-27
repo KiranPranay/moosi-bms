@@ -38,8 +38,13 @@ export const PROJECT_DOCS = [
     id: "doc-abstract",
     title: "Abstract",
     file: "./docs/abstract.pdf",
-    note: "The one-page project abstract.",
-    pending: true,
+    note: "One page: what the project does, a benchmark against existing products and papers, and the Delta X over the base paper.",
+  },
+  {
+    id: "doc-benchmark",
+    title: "Benchmarking and Delta X",
+    file: "./docs/benchmark-delta-x.pdf",
+    note: "Six commercial products and seven research methods compared with this project, and the full Delta X over Ojo et al. (IEEE TIE, 2021), with every calculation shown.",
   },
   {
     id: "doc-review1",
@@ -114,7 +119,7 @@ export const PHASES = [
       { id: "p1-doc-arch", title: "Architecture Diagram", file: "./docs/architecture.png", note: "Block diagram submitted with the synopsis.", pending: true },
       { id: "p1-doc-signoff", title: "Guide Sign-off", file: "./docs/guide-approval.pdf", note: "Scanned approval page.", pending: true },
     ],
-    docRefs: ["doc-abstract", "doc-review1", "doc-references"],
+    docRefs: ["doc-abstract", "doc-benchmark", "doc-review1", "doc-references"],
     tasks: [
       { id: "p1-synopsis",     title: "Synopsis",              done: true  },
       { id: "p1-architecture", title: "Architecture Diagram",  done: true  },
