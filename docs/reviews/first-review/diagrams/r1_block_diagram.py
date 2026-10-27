@@ -1,6 +1,6 @@
 """First review - block diagram of the two-layer system.
 
-Drawn from docs/current-architecture.md (revision 2.1). Layer A is the
+Drawn from docs/current-architecture.md (revision 2.2). Layer A is the
 hardware BMS, which protects the cells on its own; Layer B is the ESP32
 supervisor that adds early warning and separate charge / load control.
 
@@ -37,9 +37,9 @@ ax.text(11.55, 8.38, "FUSED+", ha="center", va="center", fontsize=11, color=TEAL
 # ── Layer B ─────────────────────────────────────────────────────────────
 group(ax, 3.35, 0.70, 14.25, 5.30, "Layer B · ESP32 supervisor", NAVY)
 ads = box(ax, 5.10, 4.15, 2.50, 1.00, ["ADS1115", "4 cell taps · 16-bit"], BLUE, fs=12)
-ntc = box(ax, 5.10, 1.55, 2.50, 1.00, ["4 × NTC 10 kΩ", "ADC1 · GPIO32–35"], AMBER, fs=12)
+ntc = box(ax, 5.10, 1.55, 2.50, 1.00, ["5 × NTC 10 kΩ", "4 cells + ambient"], AMBER, fs=12)
 esp = box(ax, 8.90, BY, 3.20, 1.75,
-          ["ESP32", "samples at 5 Hz", "dT/dt over 30 s", "latched state machine"], NAVY, fs=12.5)
+          ["ESP32", "samples at 5 Hz", "thermal model + dT/dt", "latched state machine"], NAVY, fs=12.5)
 ina = box(ax, 12.40, 4.15, 2.30, 1.00, ["INA226", "pack current"], BLUE, fs=12)
 alarm = box(ax, 12.40, 1.55, 2.30, 1.00, ["Alarm", "buzzer + LED"], RED, fs=12)
 

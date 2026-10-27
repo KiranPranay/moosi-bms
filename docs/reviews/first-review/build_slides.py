@@ -5,7 +5,7 @@
 The slides use the "banded" 4:3 design from ../deck_common.py: green bars, large
 left-aligned headings and blue tables (see ../template-notes.md).
 The engineering content follows the build authority, docs/current-architecture.md
-(revision 2.1). Every reference was checked against Crossref and its abstract
+(revision 2.2). Every reference was checked against Crossref and its abstract
 read; see research-notes.md.
 """
 import os
@@ -140,8 +140,8 @@ def build():
 
     title_slide(prs, n, """
 Good morning. I am Muskan Sulathana, and this is my first review. My project is a
-battery management system for a small lithium-ion pack that watches how fast the
-cells are warming up, not only how hot they are. Since the zeroth review I have
+battery management system for a small lithium-ion pack that predicts how fast each
+cell should be warming up, and acts when a cell heats faster than its current explains. Since the zeroth review I have
 finished the literature survey and the full design of the system, and I will take you
 through both.
 """); n += 1
@@ -166,15 +166,15 @@ the coming months.
         "This project builds a predictive thermal battery management system for a 4S1P "
         "pack of NCR18650GA cells, with two protection layers that work independently.",
         "A hardware BMS gives over-voltage, under-voltage, over-current and short-circuit "
-        "protection. An ESP32 measures every cell voltage, the pack current and four cell "
-        "temperatures, and works out how fast the temperature is rising.",
-        "When a reading or the rate of rise crosses a limit, the ESP32 opens the charge or "
-        "load relay and latches the fault. Readings are shown on a Wi-Fi dashboard that is "
+        "protection. An ESP32 measures every cell voltage, the pack current and the cell and "
+        "air temperatures, and uses a thermal model to predict how fast each cell should heat.",
+        "When a cell heats faster than the current explains, or a reading crosses a limit, the "
+        "ESP32 opens the charge or load relay and latches the fault. Readings are shown on a Wi-Fi dashboard that is "
         "not part of the safety chain.",
     ], """
 This is the whole project in five points. The first two explain why the usual approach
 is not enough. The third and fourth describe what I am building: a hardware layer that
-protects the cells on its own, and an ESP32 layer that watches the temperature trend.
+protects the cells on its own, and an ESP32 layer that predicts how each cell should heat.
 The last point is how it acts: it disconnects only the unsafe direction and keeps the
 fault latched until someone checks it.
 """, size=17); n += 1
@@ -246,10 +246,10 @@ depend on it.
         "To study thermal runaway in lithium-ion cells and the methods used to detect it early.",
         "To design a two-layer protection system: an independent hardware BMS, and an ESP32 "
         "supervisor that can disconnect charging and discharging separately.",
-        "To measure every cell voltage, the pack current and four cell temperatures "
-        "accurately, using an ADS1115, an INA226 and NTC thermistors.",
-        "To estimate the rate of temperature rise (dT/dt) in firmware and act on it before "
-        "any fixed temperature limit is reached, with every trip latched.",
+        "To measure every cell voltage, the pack current, four cell temperatures and the air "
+        "temperature accurately, using an ADS1115, an INA226 and NTC thermistors.",
+        "To predict each cell's heating with a thermal model, and act on heating the current "
+        "cannot explain before any fixed temperature limit is reached, with every trip latched.",
         "To show live readings and faults on a Wi-Fi dashboard, while every safety function "
         "keeps working without Wi-Fi.",
     ], """
@@ -262,12 +262,17 @@ safety chain.
 
     image_slide(prs, n, "Methodology", "r1_methodology.png", """
 This is how the controller works, five times every second. It reads the four cell taps,
-the pack current and the four temperatures, removes noise with a median filter and a
-ten-second low-pass filter, and then works out the rate of temperature rise by fitting a
-straight line over the last thirty seconds. Before trusting any reading it checks that
-the sensors are plausible. Then it compares everything with the trip limits and the
-warning limits. A trip opens only the relay for the unsafe direction and stays latched
-until a manual reset.
+the pack current, the four cell temperatures and the air temperature, removes noise with
+a median filter and a ten-second low-pass filter, and works out the rate of temperature
+rise by fitting a straight line over the last thirty seconds. Then it predicts. A thermal
+model of each cell, with a Kalman filter, estimates the core temperature and the abnormal
+heat in watts: heat the current cannot explain, the early sign of a fault. Every ten
+seconds it forecasts each cell's temperature five minutes ahead, and when that time comes
+it checks the forecast against the real reading. It also compares the cells with each
+other, checks each cell's self-discharge at rest, and works out the safe current.
+Before trusting any reading it checks that the sensors are plausible, then compares
+everything with the trip and warning limits. A trip opens only the relay for the unsafe
+direction and stays latched until a manual reset.
 """); n += 1
 
     image_slide(prs, n, "Block Diagram", "r1_block_diagram.png", """
@@ -275,7 +280,8 @@ The design has two layers. Layer A, at the top, is a hardware BMS board connecte
 directly to the cells. It handles over-voltage, under-voltage, over-current and short
 circuit on its own, and it keeps working even if the ESP32 or the Wi-Fi fails. Layer B
 is the ESP32 supervisor. It reads the ADS1115 for the cell voltages, the INA226 for the
-current and four thermistors for temperature, and it drives two relays that connect the
+current and five thermistors for temperature, one on each cell and one in the air, and
+it drives two relays that connect the
 load and the charger separately.
 """); n += 1
 
@@ -292,12 +298,12 @@ pull-ups, so if the ESP32 resets or crashes, both branches disconnect.
 
     table_slide(prs, n, "Hardware and Software Requirements",
         ["Type", "Item", "Used for"],
-        [["Hardware", "ESP32-WROOM-32 DevKit", "Sensing, dT/dt, relay control and Wi-Fi"],
+        [["Hardware", "ESP32-WROOM-32 DevKit", "Sensing, thermal prediction, relays, Wi-Fi"],
          ["Hardware", "4 × NCR18650GA 3300 mAh", "The 4S1P pack, with a 16.8 V 1.5 A charger"],
          ["Hardware", "4S 20 A hardware BMS", "Voltage, current and short-circuit protection"],
          ["Hardware", "ADS1115 16-bit ADC", "The four cell-tap voltages"],
          ["Hardware", "INA226 with 5 mΩ shunt", "Pack current, charging and discharging"],
-         ["Hardware", "4 × NTC 10 kΩ B3950", "Temperature on each cell"],
+         ["Hardware", "5 × NTC 10 kΩ B3950", "Temperature of each cell and of the air"],
          ["Hardware", "2-channel 5 V relay module", "Separate charge and load disconnect"],
          ["Hardware", "LM2596, 7.5 A fuse, buzzer", "5 V supply, wiring protection, local alarm"],
          ["Software", "ESP-IDF with C++", "Firmware framework and language"],
@@ -307,7 +313,7 @@ pull-ups, so if the ESP32 resets or crashes, both branches disconnect.
         """
 This is everything the project uses. On the hardware side the main parts are the ESP32,
 the four cells, the hardware BMS board, the ADS1115 for accurate cell voltages, the
-INA226 for current and the four thermistors. The relay module gives the separate charge
+INA226 for current and the five thermistors. The relay module gives the separate charge
 and load control. On the software side the firmware is written in C++ on ESP-IDF, with
 FreeRTOS running the sensing, safety and telemetry work as separate tasks.
 """, [1.30, 3.30, 4.70], size=14, row_h=0.39, aligns=["c", "l", "l"]); n += 1
@@ -317,7 +323,7 @@ FreeRTOS running the sensing, safety and telemetry work as separate tasks.
         [[{"b": "Objective 1: ", "t": "Literature Survey & System Study"}, "✓", "✓", "", "", ""],
          [{"b": "Objective 2: ", "t": "Two-Layer Design & Component Selection"}, "✗", "✓", "", "", ""],
          [{"b": "Objective 3: ", "t": "Sensing Hardware, Pack Assembly & Calibration"}, "✗", "✗", "", "", ""],
-         [{"b": "Objective 4: ", "t": "dT/dt Estimation & Safety State Machine"}, "✗", "✗", "", "", ""],
+         [{"b": "Objective 4: ", "t": "Thermal Prediction & Safety State Machine"}, "✗", "✗", "", "", ""],
          [{"b": "Objective 5: ", "t": "Wi-Fi Dashboard, Testing & Documentation"}, "✗", "✗", "", "", ""]],
         """
 This is where I am. The literature survey was done over the first two months, and the

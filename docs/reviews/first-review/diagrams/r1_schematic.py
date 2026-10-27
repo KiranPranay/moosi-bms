@@ -99,6 +99,6 @@ with schemdraw.Drawing(show=False) as d:
 
     d += elm.Thermistor().at((-3.2, 1.9)).right().length(1.4).color(AMBER)
     d += elm.Line().at((-1.8, 1.9)).to((-0.35, 1.9)).color(AMBER).linestyle("--")
-    txt(d, -2.5, 0.85, "4 × NTC\non the cells", AMBER, size=12.5)
+    txt(d, -2.5, 0.85, "5 × NTC\n4 cells + air", AMBER, size=12.5)
 
     save_schemdraw(d, "r1_schematic")
