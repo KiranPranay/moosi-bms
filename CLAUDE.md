@@ -27,7 +27,9 @@ Associate Professor.
 - **Generated files are committed.** After editing a source (`*.md`, `build_slides.py`, a diagram `*.py`),
   rebuild its PDF, PPTX or PNG and check the render before committing.
 - **Writing voice:** student-facing documents are first person (Muskan), in plain words, with no unexplained
-  jargon. Claims of novelty are stated as "within the papers reviewed", never "first in the world". Results
+  jargon. The exception is the abstract (`docs/abstract.docx`, built by `docs/reviews/build_abstract.py`): a
+  formal academic abstract in the third person, describing the problem, the system, the algorithms, the features
+  and the improvement over the base paper, with no prices and no semester or gate details. Claims of novelty are stated as "within the papers reviewed", never "first in the world". Results
   are never claimed before the test that produces them; the firmware is not written yet.
 - **Safety:** never plan or describe a test that drives a live cell into thermal runaway, overcharge or
   over-discharge. Limits are proven with simulated signals, dummy heat sources, or the external-resistor

@@ -61,8 +61,10 @@ These notes let a new Claude Code session, on a new device, carry on where the l
 10. **The abstract is a Word file** built by `docs/reviews/build_abstract.py` (python-docx), in the layout of a
    classmate's abstract the user shared as a format reference: A4, Times New Roman, bold 16 pt centred title,
    centred "Abstract", justified 12 pt prose, the student's name and roll number in bold to the right, and the
-   guide's signature block. The benchmark and the Delta X are written as prose there; the tables are in
-   `benchmark-delta-x`. The reference `.docx` stays local only (`*[Bb]atch*.docx` is git-ignored).
+   guide's signature block. It is a formal academic abstract in the third person (problem, system, algorithms,
+   features, improvement over the base paper), with no prices or semester and gate details; the user rejected
+   a first-person version with those. The benchmark tables and the Delta X working are in `benchmark-delta-x`.
+   The reference `.docx` stays local only (`*[Bb]atch*.docx` is git-ignored).
 9. **Delta X numbers** (all derived from the base paper's own figures; working in `docs/benchmark-delta-x.md`
    section 4): its 0.69 °C threshold inside the 4.5 s feedback window only catches heating above about
    9.2 °C/min (≈ 6.9 W), against our 0.5 °C/min warning (18×) and the 0.2 W 5-minute check (34×); 0.5 % per-sample

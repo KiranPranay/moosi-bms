@@ -27,36 +27,31 @@ STUDENT = "Ms. Muskan Sulathana (23WH1A0208)"
 SIGNATURE = ["Signature", "Dr. M. Rupesh", "Associate Professor", "EEE Department"]
 
 BODY = [
-    "An internal short inside one cell is often named as the cause of lithium-ion battery accidents. In its "
-    "most common form it starts small: it slowly drains its own cell and makes only a fraction of a watt of "
-    "heat. A normal battery management system (BMS) cannot see this stage, because it acts only when a "
-    "voltage, current or temperature crosses a fixed limit. In this project I am building a four-cell (4S1P) "
-    "NCR18650GA battery pack with two layers of protection: an independent hardware BMS, and an ESP32 "
-    "supervisor that predicts. Five times a second, the ESP32 runs a physical thermal model of every cell "
-    "with a Kalman filter, and estimates what no sensor can measure: the core temperature, and the abnormal "
-    "heat, in watts, that the cell's own current cannot explain. It forecasts each cell's temperature 1 and "
-    "5 minutes ahead and checks every forecast against the real reading, and at rest it estimates each "
-    "cell's self-discharge from its voltage. All of this evidence becomes one risk level (Normal, Watch, "
-    "Warning or Trip), which can open separate charge and load relays and keep them latched.",
-
-    "I benchmarked the design against six commercial products, from a ₹239 hardware BMS board and protection "
-    "chips from TI, ADI and NXP to the Orion BMS and the Li-ion Tamer gas sensor. All of them handle "
-    "temperature with fixed limits, and the only early warning among them, the gas sensor (US$596), reacts "
-    "only after a cell has vented. Among seven published methods, the longest warnings come from methods "
-    "trained on cells or a vehicle taken into thermal runaway, and only one of them acts on the battery.",
-
-    "The Delta X over the base paper, Ojo et al. (IEEE TIE, 2021), which flags faults with a trained neural "
-    "network, is as follows. My design needs no training data: 11 physical constants, fitted once from "
-    "normal use, replace about 21,000 trained weights. The base paper's 0.69 °C threshold within its 4.5 s "
-    "window catches heating only above about 9 °C/min, while my design is built to warn at 0.5 °C/min "
-    "(about 0.4 W), 18 times slower, and its 5-minute check catches 0.2 W. It adds electrical evidence of a "
-    "short, a leak from 20 mA; it needs 10–30 s of persistence and agreement between thermal and electrical "
-    "evidence before an alarm; it uses about 2,000 times less arithmetic per estimate on a ₹639 ESP32 "
-    "instead of a Jetson TX2 or Raspberry Pi; and it disconnects the pack instead of only raising a flag.",
-
-    "Semester 1 builds and calibrates the electronics and the first predictive firmware with no lithium "
-    "cells (Gates 0–2). Semester 2 builds the pack and tests every target at Gates 9–11, including a safely "
-    "emulated soft short. Until those tests, all figures for my design are targets, not results.",
+    "Thermal runaway is a major safety hazard in lithium-ion battery packs, and one of its main causes is an "
+    "internal short circuit, which in its early stage slowly discharges the affected cell and generates only a "
+    "fraction of a watt of heat. Conventional battery management systems (BMS) and battery protection ICs act "
+    "only when a voltage, current or temperature crosses a fixed threshold, and therefore cannot detect this "
+    "stage. This project presents a predictive thermal battery management system for a 4S1P lithium-ion pack "
+    "of NCR18650GA cells. The system has two independent protection layers: a hardware BMS that provides "
+    "over-voltage, under-voltage, over-current and short-circuit protection, and an ESP32-based supervisory "
+    "controller that samples the four cell voltages through a 16-bit ADS1115 ADC, the pack current through an "
+    "INA226 with a 5 mΩ shunt, and the four cell temperatures and the ambient temperature through NTC "
+    "thermistors at 5 Hz. A two-state (core and surface) lumped thermal model of each cell is combined with a "
+    "Kalman filter to estimate the core temperature and the abnormal heat generation, in watts, that the "
+    "cell's I²R losses cannot explain. The model predicts each cell's temperature 1 and 5 minutes ahead and "
+    "confirms every prediction against the measured value. Additional algorithms track the internal "
+    "resistance online, estimate the self-discharge current of each cell at rest from its relative voltage "
+    "drift, cross-check the thermal and electrical evidence through an energy balance, forecast the time to "
+    "the temperature limit and the safe continuous current, and detect self-accelerating heating. These "
+    "indicators are combined into a four-level risk classification (Normal, Watch, Warning and Trip) that "
+    "controls separate charge and load relays with latched, fail-safe tripping, and a Wi-Fi dashboard "
+    "displays the estimates. Compared with the LSTM neural-network method of the base paper, which requires "
+    "offline GPU training and responds only to rapid temperature rises of about 9 °C/min, the proposed "
+    "model-based method needs no training data, runs on a low-cost microcontroller and is designed to detect "
+    "abnormal heat of about 0.4 W (0.5 °C/min), a temperature rise about eighteen times slower. The system is "
+    "evaluated through "
+    "sensor calibration, controlled charge and discharge tests, and a safely emulated soft internal short "
+    "circuit created with an external resistor.",
 ]
 
 
@@ -106,10 +101,10 @@ def build():
     for text in BODY:
         paragraph(doc, text, align=WD_ALIGN_PARAGRAPH.JUSTIFY, after=120)
 
-    paragraph(doc, STUDENT, bold=True, before=360, left=4344, line=398 / 240)
+    paragraph(doc, STUDENT, bold=True, before=960, left=4344, line=398 / 240)
     for i, line in enumerate(SIGNATURE):
         paragraph(doc, line, size=14, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER,
-                  before=420 if i == 0 else 0, left=5600, line=379 / 240)
+                  before=1000 if i == 0 else 0, left=5600, line=379 / 240)
 
     doc.save(OUT)
     subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", os.path.dirname(OUT), OUT],

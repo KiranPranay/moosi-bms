@@ -38,7 +38,7 @@ export const PROJECT_DOCS = [
     id: "doc-abstract",
     title: "Abstract",
     file: "./docs/abstract.pdf",
-    note: "One page: what the project does, the benchmark against existing products and papers, and the Delta X over the base paper. The working behind every figure is in Benchmarking and Delta X.",
+    note: "One-page academic abstract: the problem, the proposed two-layer system, the predictive algorithms, the main features and the improvement over the base paper. The working behind every figure is in Benchmarking and Delta X.",
     extra: { label: "Word", file: "./docs/abstract.docx" },
   },
   {
